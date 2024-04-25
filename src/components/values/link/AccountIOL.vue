@@ -34,10 +34,11 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, watch} from "vue";
 import EntityIOL from "@/components/values/link/EntityIOL.vue";
-import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
 import {NetworkCache} from "@/utils/cache/NetworkCache";
+import {NameQuery} from "@/utils/NameQuery";
+import {LabelQuery} from "@/utils/LabelQuery";
 
 export default defineComponent({
   name: "AccountIOL",
@@ -54,24 +55,19 @@ export default defineComponent({
   },
   setup(props) {
 
-    const labelLookup = LabelByIdCache.instance.makeLookup(computed(() => props.accountId))
-    onMounted(
-        () => labelLookup.mount()
-    )
-    onBeforeUnmount(
-        () => labelLookup.unmount()
-    )
+    const labelQuery = new LabelQuery(computed(() => props.accountId))
+    onMounted(() => labelQuery.mount())
+    onBeforeUnmount(() => labelQuery.unmount())
 
-    const networkLookup = NetworkCache.instance.makeLookup()
-    onMounted(
-        () => networkLookup.mount()
-    )
-    onBeforeUnmount(
-        () => networkLookup.unmount()
-    )
+    const nameQuery = new NameQuery(labelQuery)
+    onMounted(() => nameQuery.mount())
+    onBeforeUnmount(() => nameQuery.unmount())
 
+    watch(nameQuery.label, () => {
+      console.log("label for " + props.accountId +  " => " + nameQuery.label.value)
+    })
     return {
-      label: labelLookup.entity,
+      label: nameQuery.label,
     }
   }
 })
