@@ -19,6 +19,7 @@
  */
 
 import {KNS, NameNotFoundError} from "@kabuto-sh/ns";
+import {AccountId} from "@hashgraph/sdk";
 
 let _nameService: KNS | null = null;
 
@@ -40,6 +41,21 @@ export async function knsResolve(domain: string): Promise<string | null> {
         if (error instanceof NameNotFoundError) {
             // domain not found
             return null;
+        }
+
+        throw error;
+    }
+}
+
+export async function knsFindNames(accountId: string): Promise<string[]> {
+    if (_nameService == null) return [];
+
+    try {
+        return await _nameService.findNamesByHederaAddress(AccountId.fromString(accountId));
+    } catch (error) {
+        if (error instanceof NameNotFoundError) {
+            // no domain for this address
+            return [];
         }
 
         throw error;

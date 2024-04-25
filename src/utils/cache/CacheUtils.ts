@@ -41,6 +41,7 @@ import {BalanceCache} from "@/utils/cache/BalanceCache";
 import {NetworkCache} from "@/utils/cache/NetworkCache";
 import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
 import {HbarPriceCache} from "@/utils/cache/HbarPriceCache";
+import {HNSCache} from "@/utils/cache/HNSCache";
 import {ContractResultByTransactionIdCache} from "@/utils/cache/ContractResultByTransactionIdCache";
 import {ContractResultByTsCache} from "@/utils/cache/ContractResultByTsCache";
 import {SourcifyCache} from "@/utils/cache/SourcifyCache";
@@ -52,6 +53,7 @@ import {VerifiedContractsByAccountIdCache} from "@/utils/cache/VerifiedContracts
 import {VerifiedContractsCache} from "@/utils/cache/VerifiedContractsCache";
 import {LogicContractCache} from "@/utils/cache/LogicContractCache";
 import {AdminContractCache} from "@/utils/cache/AdminContractCache";
+import {KNSCache} from "@/utils/cache/KNSCache";
 
 export class CacheUtils {
 
@@ -74,6 +76,8 @@ export class CacheUtils {
         LogicContractCache.instance.clear()
         MarketDataCache.instance.clear()
         HbarPriceCache.instance.clear()
+        HNSCache.instance.clear()
+        KNSCache.instance.clear()
         // IPFSCache.instance => no clear: we preserve it because IPFS content is valid for all networks
         NetworkCache.instance.clear()
         NftCollectionCache.instance.clear()

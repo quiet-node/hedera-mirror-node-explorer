@@ -19,6 +19,7 @@
  */
 
 import {Resolver} from '@hedera-name-service/hns-resolution-sdk'
+import {IndexerDomainInfo} from "@hedera-name-service/hns-resolution-sdk/dist/types/IndexerTypes";
 
 
 let _nameService: Resolver | null = null
@@ -59,4 +60,27 @@ export async function hnsResolve(domain: string): Promise<string | null> {
         console.log("reason=" + error)
         return null;
     }
+}
+
+export async function hnsGetDomainsForAccount(accountId: string): Promise<string[]> {
+    if (_nameService == null) return [];
+
+    try {
+        const r = await _nameService.getAllDomainsForAccount(accountId)
+        if (Array.isArray(r)) {
+            const result: string[] = []
+            for (const i of r) {
+                result.push(i.domain)
+            }
+            return result
+        } else {
+            console.log("r=" + JSON.stringify(r))
+            return []
+        }
+    } catch (error) {
+        console.log("Resolver.getAllDomainsForAccount() did fail")
+        console.log("reason=" + error)
+        return [];
+    }
+
 }
