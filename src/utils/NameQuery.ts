@@ -40,7 +40,7 @@ export class NameQuery {
 
     public mount(): void {
         this.watchHandle = watch(
-            [this.labelQuery.entityId, this.labelQuery.label],
+            [this.labelQuery.entityId, this.labelQuery.label, this.labelQuery.hasNoLabel],
             this.updateNames, {immediate: true} )
     }
 
