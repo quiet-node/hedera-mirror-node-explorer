@@ -43,6 +43,9 @@
             </template>
           </Copyable>
           <span v-if="accountChecksum" class="has-text-grey h-is-smaller">-{{ accountChecksum }}</span>
+          <span class="ml-2">
+            <AccountLabel :account-id="normalizedAccountId"/>
+          </span>
         </div>
         <div v-if="operatorNodeRoute" id="nodeLink" class="h-is-tertiary-text mt-2">
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Node:</div>
@@ -336,12 +339,14 @@ import DateTimePicker from "@/components/DateTimePicker.vue";
 import DownloadButton from "@/components/DownloadButton.vue";
 import {DialogController} from "@/components/dialog/DialogController";
 import TransactionDownloadDialog from "@/components/download/TransactionDownloadDialog.vue";
+import AccountLabel from "@/components/values/label/AccountLabel.vue";
 
 export default defineComponent({
 
   name: 'AccountDetails',
 
   components: {
+    AccountLabel,
     TransactionDownloadDialog,
     DownloadButton,
     AccountCreatedContractsTable,
