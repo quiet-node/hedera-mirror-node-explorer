@@ -113,6 +113,7 @@ export class NameQuery {
         for (const n of names) {
             result.push({name: n, source: source})
         }
+        // result.push({name: 'sample-name.hbar', source: NameSource.HNS})
         return result
     }
 }

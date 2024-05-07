@@ -23,14 +23,9 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="label"
-       :class="{'h-is-label':!compact, 'h-is-compact-label':compact}"
-       class="is-inline-block">
-    <slot/>
-    <span>
-      {{ label }}
-    </span>
-  </div>
+
+  <EntityLabel :label="label"/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -41,50 +36,27 @@
 
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
 import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
-
-export const MAX_LABEL_SIZE = 35
+import EntityLabel from "@/components/values/label/EntityLabel.vue";
 
 export default defineComponent({
-  name: "EntityLabel",
-
-  components: {},
-
+  name: "ContractLabel",
+  components: {EntityLabel},
   props: {
-    id: {
+    contractId: {
       type: String as PropType<string | null>,
       default: null
     },
-    slice: {
-      type: Number as PropType<number | null>,
-      default: MAX_LABEL_SIZE
-    },
-    compact: {
-      type: Boolean,
-      default: false
-    },
   },
-
   setup(props) {
-    const id = computed(() => props.id)
-
-    const labelLookup = LabelByIdCache.instance.makeLookup(id)
-    onMounted(() =>labelLookup.mount())
-    onBeforeUnmount(() => labelLookup.unmount())
-
-    const slice = computed(() => props.compact ? 12 : props.slice)
-    const label = computed(() => {
-      let result = labelLookup.entity.value
-      if (result != null
-          && slice.value != null
-          && slice.value > 0
-          && slice.value < result.length) {
-        result = result.slice(0, slice.value) + '…'
-      }
-      return result
-    })
-
+    const labelLookup = LabelByIdCache.instance.makeLookup(computed(() => props.contractId))
+    onMounted(
+        () => labelLookup.mount()
+    )
+    onBeforeUnmount(
+        () => labelLookup.unmount()
+    )
     return {
-      label,
+      label: labelLookup.entity
     }
   }
 })
