@@ -40,7 +40,7 @@ export abstract class ChartController {
 
     public mount() {
         this.watchHandle = watch(this.container, this.containerDidChange, { immediate: true })
-        this.startLoadingData().then()
+        this.refresh()
     }
 
     public unmount(): void {
@@ -53,6 +53,14 @@ export abstract class ChartController {
             this.chartRoot = null
         }
         this.data.value = null
+    }
+
+    public refresh() {
+        if (this.loading.value) {
+            console.warn("ChartController.refresh() aborts because loading is on-going")
+        } else {
+            this.startLoadingData().then()
+        }
     }
 
     //

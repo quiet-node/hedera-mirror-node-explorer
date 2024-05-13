@@ -25,6 +25,9 @@
 <template>
   <Chart :controller="controller">
     <template v-slot:chartTitle>{{metricName.toUpperCase()}}<span class="has-text-grey"> per day</span></template>
+    <template v-slot:chartControl>
+      <PeriodSelector v-model:period-option="periodOption"/>
+    </template>
   </Chart>
 </template>
 
@@ -38,14 +41,14 @@
 // https://www.amcharts.com/docs/v5/getting-started/integrations/vue/
 //
 
-import {defineComponent, onBeforeUnmount, onMounted, PropType} from "vue"
+import {defineComponent, onBeforeUnmount, onMounted, ref} from "vue"
 import DashboardCard from "@/components/DashboardCard.vue";
-import {ChartController} from "@/components/chart/base/ChartController";
 import Chart from "@/components/chart/base/Chart.vue";
 import {HgraphChartController} from "@/components/chart/hgraph/HgraphChartController";
+import PeriodSelector from "@/components/chart/hgraph/PeriodSelector.vue";
 
 export default defineComponent({
-  components: {Chart, DashboardCard},
+  components: {PeriodSelector, Chart, DashboardCard},
   props: {
     metricName: {
       type: String,
@@ -62,7 +65,8 @@ export default defineComponent({
     })
 
     return {
-      controller
+      controller,
+      periodOption: controller.period
     }
   }
 })

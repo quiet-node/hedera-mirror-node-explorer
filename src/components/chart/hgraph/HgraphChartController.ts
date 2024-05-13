@@ -20,8 +20,12 @@
 
 import {XYChartController} from "@/components/chart/base/XYChartController";
 import * as am5 from "@amcharts/amcharts5";
+import {ref, watch, WatchStopHandle} from "vue";
 
 export class HgraphChartController extends XYChartController {
+
+    public period = ref<string>("day")
+    private periodWH: WatchStopHandle|null = null
 
     //
     // Public
@@ -35,6 +39,19 @@ export class HgraphChartController extends XYChartController {
     // XYChartController
     //
 
+    mount() {
+        super.mount()
+        this.periodWH = watch(this.period, () => this.refresh())
+    }
+
+    unmount(): void {
+        if (this.periodWH !== null) {
+            this.periodWH()
+            this.periodWH = null
+        }
+        super.unmount()
+    }
+
     protected setup(root: am5.Root) {
         super.setup(root)
         this.series!.data.processor = am5.DataProcessor.new(root, {
@@ -47,7 +64,7 @@ export class HgraphChartController extends XYChartController {
         const query = `query {
   all_metrics: ecosystem_metric(where: {
     name: { _eq: ${this.metricName} }
-    period: { _eq: "day" }
+    period: { _eq: ${this.period.value} }
   }) {
     end_date
     total

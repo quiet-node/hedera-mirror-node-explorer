@@ -23,17 +23,36 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <DashboardCard>
-        <template v-slot:title>
-            <slot name="chartTitle"/>
-        </template>
-        <template v-slot:control>
-            <slot name="chartControl"/>
-        </template>
-        <template v-slot:content>
-            <div ref="container" style="height:300px"/>
-        </template>
-    </DashboardCard>
+  <o-field>
+    <o-select
+        v-bind:model-value="periodOption"
+        @update:model-value="periodOptionDidChange($event)">
+      <option key="day" value="day"
+              style="background-color: var(--h-theme-box-background-color)">
+        Day
+      </option>
+      <option key="week" value="week"
+              style="background-color: var(--h-theme-box-background-color)">
+        Week
+      </option>
+      <option key="month" value="month"
+              style="background-color: var(--h-theme-box-background-color)">
+        Month
+      </option>
+      <option key="quarter" value="quarter"
+              style="background-color: var(--h-theme-box-background-color)">
+        Quarter
+      </option>
+      <option key="year" value="year"
+              style="background-color: var(--h-theme-box-background-color)">
+        Year
+      </option>
+      <option key="century" value="year"
+              style="background-color: var(--h-theme-box-background-color)">
+        Century
+      </option>
+    </o-select>
+  </o-field>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -42,27 +61,22 @@
 
 <script lang="ts">
 
-//
-// https://www.amcharts.com/docs/v5/getting-started/integrations/vue/
-//
-
-import {defineComponent, PropType} from "vue"
-import DashboardCard from "@/components/DashboardCard.vue";
-import {ChartController} from "@/components/chart/base/ChartController";
+import {defineComponent} from "vue";
 
 export default defineComponent({
-    components: {DashboardCard},
-    props: {
-        controller: {
-            type: Object as PropType<ChartController>,
-            required: true
-        }
-    },
-    setup(props) {
-        return {
-            container: props.controller.container
-        }
+  components: {},
+  props: {
+    periodOption: {
+      type: String,
+      default: "day"
     }
+  },
+  setup(props, ctx) {
+    const periodOptionDidChange = (newValue: string) => ctx.emit('update:periodOption', newValue)
+    return {
+      periodOptionDidChange
+    }
+  }
 })
 
 </script>
