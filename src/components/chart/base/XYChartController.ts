@@ -24,8 +24,23 @@ import * as am5 from "@amcharts/amcharts5";
 
 export abstract class XYChartController extends ChartController {
 
-    protected readonly timeRange: "1h"|"24h"|"ytd" = "24h"
-    protected series: am5xy.ColumnSeries|null = null
+    private xAxis: am5xy.DateAxis<am5xy.AxisRenderer>|null = null
+    private series: am5xy.ColumnSeries|null = null
+
+    //
+    // Protected (to be override if needed)
+    //
+
+    protected makeBaseInterval():  am5.time.ITimeInterval {
+        return {
+            timeUnit: "day",
+            count: 1
+        }
+    }
+
+    protected makeDataProcessor(root: am5.Root): am5.DataProcessor|null {
+        return null
+    }
 
     //
     // Protected
@@ -63,13 +78,9 @@ export abstract class XYChartController extends ChartController {
 
         // Create axes
         // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
-        const xAxis = am5xy.DateAxis.new(root, {
+        this.xAxis = am5xy.DateAxis.new(root, {
             maxDeviation: 0,
-            baseInterval: {
-//                timeUnit: XYChartController.makeTimeUnit(this.timeRange),
-                timeUnit: "day",
-                count: 1
-            },
+            baseInterval: this.makeBaseInterval(),
             renderer: am5xy.AxisRendererX.new(root, {
                 minorGridEnabled:true,
                 minorLabelsEnabled:true
@@ -81,7 +92,7 @@ export abstract class XYChartController extends ChartController {
         //     "day":"dd",
         //     "month":"MM"
         // });
-        chart.xAxes.push(xAxis);
+        chart.xAxes.push(this.xAxis);
 
         const yAxis = am5xy.ValueAxis.new(root, {
             renderer: am5xy.AxisRendererY.new(root, {}),
@@ -94,7 +105,7 @@ export abstract class XYChartController extends ChartController {
         // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
         this.series = am5xy.ColumnSeries.new(root, {
             name: "Series",
-            xAxis: xAxis,
+            xAxis: this.xAxis,
             yAxis: yAxis,
             valueYField: this.valueYField,
             valueXField: this.valueXField,
@@ -103,7 +114,13 @@ export abstract class XYChartController extends ChartController {
             })
         })
         this.series.columns.template.setAll({ strokeOpacity: 0 })
-        chart.series.push(this.series);
+        chart.series.push(this.series)
+
+        // Setup data processor
+        const processor = this.makeDataProcessor(root)
+        if (processor !== null) {
+            this.series.data.processor = processor
+        }
 
         // Add scrollbar
         // https://www.amcharts.com/docs/v5/charts/xy-chart/scrollbars/
@@ -120,28 +137,6 @@ export abstract class XYChartController extends ChartController {
 
     protected populate(data: unknown[] | null): void {
         this.series?.data.setAll(data ?? [])
+        this.xAxis?.set("baseInterval", this.makeBaseInterval())
     }
-
-    //
-    // Private
-    //
-
-    // private static makeTimeUnit(timeRange: "1h"|"24h"|"ytd"): am5.time.TimeUnit {
-    //     let result: am5.time.TimeUnit
-    //     switch(timeRange) {
-    //         default:
-    //         case "1h":
-    //             result = "minute"
-    //             break
-    //         case "24h":
-    //             result = "hour"
-    //             break
-    //         case "ytd":
-    //             result = "month"
-    //             break
-    //     }
-    //     return result
-    // }
-
-
 }

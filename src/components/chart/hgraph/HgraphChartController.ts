@@ -21,6 +21,7 @@
 import {XYChartController} from "@/components/chart/base/XYChartController";
 import * as am5 from "@amcharts/amcharts5";
 import {ref, watch, WatchStopHandle} from "vue";
+import {DataProcessor, Root} from "@amcharts/amcharts5";
 
 export class HgraphChartController extends XYChartController {
 
@@ -52,12 +53,37 @@ export class HgraphChartController extends XYChartController {
         super.unmount()
     }
 
-    protected setup(root: am5.Root) {
-        super.setup(root)
-        this.series!.data.processor = am5.DataProcessor.new(root, {
+    protected makeBaseInterval(): am5.time.ITimeInterval {
+        let result: am5.time.ITimeInterval
+        switch(this.period.value) {
+            default:
+            case "day":
+                result = { timeUnit: "day", count: 1}
+                break
+            case "week":
+                result = { timeUnit: "week", count: 1}
+                break
+            case "month":
+                result = { timeUnit: "month", count: 1}
+                break
+            case "quarter":
+                result = { timeUnit: "month", count: 3}
+                break
+            case "year":
+                result = { timeUnit: "year", count: 1}
+                break
+            case "century":
+                result = { timeUnit: "year", count: 100}
+                break
+        }
+        return result
+    }
+
+    protected makeDataProcessor(root: Root): DataProcessor | null {
+        return am5.DataProcessor.new(root, {
             dateFields: ["end_date"],
             dateFormat: "yyyy-MM-ddTHH:mm:ss"
-        });
+        })
     }
 
     protected async loadData(): Promise<unknown[]> {
