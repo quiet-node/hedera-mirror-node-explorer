@@ -104,7 +104,7 @@ export class NameQuery {
 
     private updateHNS(newEntityId: string, names: string[]): void {
         if (this.labelQuery.entityId.value == newEntityId) {
-            this.knsNames.value = NameQuery.makeNameRecords(names, NameSource.HNS)
+            this.hnsNames.value = NameQuery.makeNameRecords(names, NameSource.HNS)
         } // else silently exits because entity id has been changed during resolution
     }
 
