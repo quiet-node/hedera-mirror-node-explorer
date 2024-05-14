@@ -52,9 +52,11 @@ export class NameQuery {
     }
 
     public readonly primaryName = computed<NameRecord|null>(() => {
-        const knsName = this.knsNames.value.length >= 1 ? this.knsNames.value[0] : null
-        const hnsName = this.hnsNames.value.length >= 1 ? this.hnsNames.value[0] : null
-        return  knsName ?? hnsName
+        return  this.allNames.value.length >= 1 ? this.allNames.value[0] : null
+    })
+
+    public readonly allNames = computed<NameRecord[]>(() => {
+        return this.knsNames.value.concat(this.hnsNames.value)
     })
 
     public readonly label = computed<string|null>(() => {
