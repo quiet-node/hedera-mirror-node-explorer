@@ -43,10 +43,7 @@
             </template>
           </Copyable>
           <span v-if="accountChecksum" class="has-text-grey h-is-smaller">-{{ accountChecksum }}</span>
-          <span class="ml-2">
-            <AccountLabel :account-id="normalizedAccountId"/>
-          </span>
-        </div>
+       </div>
         <div v-if="operatorNodeRoute" id="nodeLink" class="h-is-tertiary-text mt-2">
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Node:</div>
           <router-link :to="operatorNodeRoute">
@@ -57,6 +54,19 @@
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
           <div class="is-inline-block">
             <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
+          </div>
+        </div>
+        <div id="names" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Names:</div>
+          <div class="is-inline-block h-is-property-text">
+            <template v-if="allNames.length >= 1" v-for="name in allNames">
+              <div class="is-inline-block mr-2 pb-1">
+                <EntityIOL :label="name.name"/>
+              </div>
+            </template>
+            <template v-else>
+              <span class="has-text-grey">None</span>
+            </template>
           </div>
         </div>
 
@@ -340,12 +350,16 @@ import DownloadButton from "@/components/DownloadButton.vue";
 import {DialogController} from "@/components/dialog/DialogController";
 import TransactionDownloadDialog from "@/components/download/TransactionDownloadDialog.vue";
 import AccountLabel from "@/components/values/label/AccountLabel.vue";
+import {LabelQuery} from "@/utils/LabelQuery";
+import {NameQuery} from "@/utils/NameQuery";
+import EntityIOL from "@/components/values/link/EntityIOL.vue";
 
 export default defineComponent({
 
   name: 'AccountDetails',
 
   components: {
+    EntityIOL,
     AccountLabel,
     TransactionDownloadDialog,
     DownloadButton,
@@ -492,6 +506,16 @@ export default defineComponent({
         router, accountLocParser.accountId, perPage, "p2", "k2")
 
     //
+    // Names
+    //
+    const labelQuery = new LabelQuery(computed(() => props.accountId ?? null))
+    onMounted(() => labelQuery.mount())
+    onBeforeUnmount(() => labelQuery.mount())
+    const nameQuery = new NameQuery(labelQuery)
+    onMounted(() => nameQuery.mount())
+    onBeforeUnmount(() => nameQuery.mount())
+
+    //
     // Transactions download
     //
 
@@ -534,7 +558,8 @@ export default defineComponent({
       filterVerified,
       downloadController,
       timeSelection,
-      onDateCleared
+      onDateCleared,
+      allNames: nameQuery.allNames
     }
   }
 });
