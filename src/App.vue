@@ -24,7 +24,7 @@
     <TopNavBar/>
   </section>
 
-  <hr v-if="!onMainDashboardPage" class="h-has-background-color" style="margin: 0; height: 4px"/>
+  <hr class="h-has-background-color" style="margin: 0; height: 4px"/>
 
   <router-view/>
 
@@ -41,16 +41,14 @@ import {computed, defineComponent, onBeforeMount, onBeforeUnmount, onMounted, pr
 import TopNavBar from "@/components/TopNavBar.vue";
 import {errorKey, explanationKey, initialLoadingKey, loadingKey, suggestionKey} from "@/AppKeys"
 import {AxiosMonitor} from "@/utils/AxiosMonitor"
-import {useRoute} from "vue-router";
+// import {useRoute} from "vue-router";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import CookiesDialog from "@/components/CookiesDialog.vue";
 import {AppStorage} from "@/AppStorage";
 
-export const XLARGE_BREAKPOINT = 1450
 export const LARGE_BREAKPOINT = 1280
 export const MEDIUM_BREAKPOINT = 1080
 export const SMALL_BREAKPOINT = 768
-export const FINAL_BREAKPOINT = 640
 
 export const ORUGA_MOBILE_BREAKPOINT = "1080px"
 
@@ -59,10 +57,10 @@ export default defineComponent({
   components: {CookiesDialog, TopNavBar},
 
   setup() {
-    const route = useRoute()
-    const onMainDashboardPage = computed(() => {
-      return route.name == "MainDashboard"
-    })
+    // const route = useRoute()
+    // const onMainDashboardPage = computed(() => {
+    //   return route.name == "MainDashboard"
+    // })
 
     const buildRelease = import.meta.env.VITE_BUILD_RELEASE ?? "not available"
     provide('buildRelease', buildRelease)
@@ -146,7 +144,7 @@ export default defineComponent({
 
     return {
       isMediumScreen,
-      onMainDashboardPage,
+      // onMainDashboardPage,
       showCookiesDialog,
       handleChooseRejectCookies,
       handleChooseAcceptCookies,

@@ -24,177 +24,16 @@
 
 <template>
 
-  <HbarMarketDashboard/>
+  <div class="h-has-background-color is-flex is-justify-content-center h-mainnet-top-banner pt-1 pb-2">
+    <DashboardItem :value="currentNetworkDisplayName"/>
+  </div>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
-
-    <div class="columns is-multiline">
-
-      <div class="column" :class="{'is-full': !displaySideBySide}">
-        <HgraphChart metric-name="accounts_associating_nfts"/>
-      </div>
-
-      <div class="column">
-        <HgraphChart metric-name="accounts_creating_nft_collections"/>
-      </div>
-
-    </div>
-
-    <div class="columns is-multiline">
-
-      <div class="column" :class="{'is-full': !displaySideBySide}">
-        <HgraphChart metric-name="accounts_minting_nfts"/>
-      </div>
-
-      <div class="column">
-        <HgraphChart metric-name="accounts_receiving_nfts"/>
-      </div>
-
-    </div>
-
-    <div class="columns is-multiline">
-
-      <div class="column" :class="{'is-full': !displaySideBySide}">
-        <HgraphChart metric-name="accounts_sending_nfts"/>
-      </div>
-
-      <div class="column">
-        <HgraphChart metric-name="active_nft_accounts"/>
-      </div>
-
-    </div>
-
-    <div class="columns is-multiline">
-
-      <div class="column" :class="{'is-full': !displaySideBySide}">
-        <HgraphChart metric-name="active_nft_builder_accounts"/>
-      </div>
-
-      <div class="column">
-        <HgraphChart metric-name="atma_transaction_fees"/>
-      </div>
-
-    </div>
-
-    <div class="columns is-multiline">
-
-      <div class="column" :class="{'is-full': !displaySideBySide}">
-        <HgraphChart metric-name="atma_transactions"/>
-      </div>
-
-      <div class="column">
-        <HgraphChart metric-name="nft_collections_created"/>
-      </div>
-
-    </div>
-
-    <div class="columns is-multiline">
-
-      <div class="column" :class="{'is-full': !displaySideBySide}">
-        <HgraphChart metric-name="nft_holders"/>
-      </div>
-
-      <div class="column">
-        <HgraphChart metric-name="nft_market_cap"/>
-      </div>
-
-    </div>
-
-    <div class="columns is-multiline">
-
-      <div class="column" :class="{'is-full': !displaySideBySide}">
-        <HgraphChart metric-name="nft_sales_volume"/>
-      </div>
-
-      <div class="column">
-        <HgraphChart metric-name="nfts_minted"/>
-      </div>
-
-    </div>
-
-    <div class="columns is-multiline">
-
-      <div class="column" :class="{'is-full': !displaySideBySide}">
-        <HgraphChart metric-name="nfts_transferred"/>
-      </div>
-
-      <div class="column">
-        <HgraphChart metric-name="other_transaction_fees"/>
-      </div>
-
-    </div>
-
-    <div class="columns is-multiline">
-
-      <div class="column" :class="{'is-full': !displaySideBySide}">
-        <HgraphChart metric-name="other_transactions"/>
-      </div>
-
-      <div class="column">
-        <HgraphChart metric-name="total_nfts"/>
-      </div>
-
-    </div>
-
-    <div class="columns is-multiline">
-
-      <div class="column" :class="{'is-full': !displaySideBySide}">
-        <HgraphChart metric-name="transaction_fees"/>
-      </div>
-
-      <div class="column">
-        <HgraphChart metric-name="transactions"/>
-      </div>
-
-    </div>
-
-
-
-
-
-<!--    <div class="columns">-->
-
-<!--      <div class="column">-->
-<!--        <Chart :controller="tpsChartController">-->
-<!--          <template v-slot:chartTitle><span class="h-is-secondary-title">TPS</span></template>-->
-<!--        </Chart>-->
-<!--      </div>-->
-
-<!--    </div>-->
-
-<!--    <div class="columns is-multiline">-->
-
-<!--      <div class="column" :class="{'is-full': !displaySideBySide}">-->
-<!--        <DashboardCard data-cy="smartContractCalls">-->
-<!--          <template v-slot:title>-->
-<!--            <span class="h-is-secondary-title">Smart Contract Calls</span>-->
-<!--          </template>-->
-<!--          <template v-slot:control>-->
-<!--            <PlayPauseButton v-bind:controller="contractTableController"/>-->
-<!--          </template>-->
-<!--          <template v-slot:content>-->
-<!--            <ContractCallTransactionTable v-bind:controller="contractTableController"/>-->
-<!--          </template>-->
-<!--        </DashboardCard>-->
-<!--      </div>-->
-
-<!--      <div class="column">-->
-<!--        <DashboardCard data-cy="hcsMessages">-->
-<!--          <template v-slot:title>-->
-<!--            <span class="h-is-secondary-title">HCS Messages</span>-->
-<!--          </template>-->
-<!--          <template v-slot:control>-->
-<!--            <PlayPauseButton v-bind:controller="messageTableController"/>-->
-<!--          </template>-->
-<!--          <template v-slot:content>-->
-<!--            <MessageTransactionTable v-bind:controller="messageTableController"/>-->
-<!--          </template>-->
-<!--        </DashboardCard>-->
-<!--      </div>-->
-
-<!--    </div>-->
-
-  </section>
+  <template v-if="isMainNetwork">
+    <PrimaryDashboard/>
+  </template>
+  <template v-else>
+    <SecondaryDashboard/>
+  </template>
 
   <Footer/>
 
@@ -211,20 +50,28 @@ import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} fr
 import HbarMarketDashboard from "../components/dashboard/HbarMarketDashboard.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
-import CryptoTransactionTable from "@/components/dashboard/CryptoTransactionTable.vue";
-import MessageTransactionTable from "@/components/dashboard/MessageTransactionTable.vue";
-import ContractCallTransactionTable from "@/components/dashboard/ContractCallTransactionTable.vue";
+import CryptoTransactionTable from "@/components/dashboard/secondary/CryptoTransactionTable.vue";
+import MessageTransactionTable from "@/components/dashboard/secondary/MessageTransactionTable.vue";
+import ContractCallTransactionTable from "@/components/dashboard/secondary/ContractCallTransactionTable.vue";
 import {TransactionType} from "@/schemas/HederaSchemas";
 import Footer from "@/components/Footer.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import {useRouter} from "vue-router";
 import Chart from "@/components/chart/base/Chart.vue";
 import HgraphChart from "@/components/chart/hgraph/HgraphChart.vue";
+import {routeManager} from "@/router";
+import {networkRegistry, NetworkRegistry} from "@/schemas/NetworkRegistry";
+import SecondaryDashboard from "@/components/dashboard/secondary/SecondaryDashboard.vue";
+import PrimaryDashboard from "@/components/dashboard/primary/PrimaryDashboard.vue";
+import DashboardItem from "@/components/dashboard/DashboardItem.vue";
 
 export default defineComponent({
   name: 'MainDashboard',
 
   components: {
+    DashboardItem,
+    PrimaryDashboard,
+    SecondaryDashboard,
     HgraphChart,
     Chart,
     Footer,
@@ -279,6 +126,16 @@ export default defineComponent({
       contractTableController.startAutoRefresh()
     })
 
+    const isMainNetwork
+        = computed(() => routeManager.currentNetwork.value == NetworkRegistry.MAIN_NETWORK)
+
+    const currentNetworkDisplayName = computed(() => {
+      const currentNetwork = routeManager.currentNetwork.value
+      const networkEntry = networkRegistry.lookup(currentNetwork)
+      return networkEntry?.displayName ?? "?"
+    })
+
+
     return {
       isSmallScreen,
       isTouchDevice,
@@ -287,6 +144,8 @@ export default defineComponent({
       messageTableController,
       contractTableController,
       TransactionType,
+      isMainNetwork,
+      currentNetworkDisplayName
     }
   }
 
