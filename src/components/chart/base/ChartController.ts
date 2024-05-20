@@ -124,7 +124,7 @@ export abstract class ChartController {
 
 }
 
-export interface GraphQLResponse {
+interface GraphQLResponse {
     data: {
         all_metrics: unknown[]
     }

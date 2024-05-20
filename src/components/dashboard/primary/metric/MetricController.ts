@@ -18,8 +18,6 @@
  *
  */
 
-import {ref} from "vue";
-
 export abstract class MetricController {
 
     private mounted = false

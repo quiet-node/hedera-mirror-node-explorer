@@ -56,12 +56,12 @@
 
         <MetricBox>
           <template v-slot:metricTitle>Total Number of Accounts</template>
-          <template v-slot:metricValue>xxx</template>
+          <template v-slot:metricValue>{{ totalAccount }}</template>
         </MetricBox>
 
         <MetricBox>
           <template v-slot:metricTitle>Total Number of Transactions</template>
-          <template v-slot:metricValue>xxx</template>
+          <template v-slot:metricValue>{{ totalTransaction }}</template>
         </MetricBox>
 
       </div>
@@ -82,6 +82,8 @@ import Variation from "@/components/dashboard/Variation.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import MetricBox from "@/components/dashboard/primary/metric/MetricBox.vue";
 import {HbarMarketController} from "@/components/dashboard/primary/metric/HbarMarketController";
+import {TotalAccountController} from "@/components/dashboard/primary/metric/TotalAccountController";
+import {TotalTransactionController} from "@/components/dashboard/primary/metric/TotalTransactionController";
 
 export default defineComponent({
   name: 'TopMetricsCard',
@@ -97,6 +99,13 @@ export default defineComponent({
     onMounted(() => hbarMarketController.mount())
     onBeforeUnmount(() => hbarMarketController.unmount())
 
+    const totalAccountController = new TotalAccountController()
+    onMounted(() => totalAccountController.mount())
+    onBeforeUnmount(() => totalAccountController.unmount())
+
+    const totalTransactionController = new TotalTransactionController()
+    onMounted(() => totalTransactionController.mount())
+    onBeforeUnmount(() => totalTransactionController.unmount())
 
     return {
       hbarPrice: hbarMarketController.hbarPriceText,
@@ -104,6 +113,8 @@ export default defineComponent({
       hbarReleased: hbarMarketController.hbarReleasedText,
       hbarTotal: hbarMarketController.hbarTotalText,
       hbarPriceVariation: hbarMarketController.hbarPriceVariationText,
+      totalAccount: totalAccountController.countText,
+      totalTransaction: totalTransactionController.countText
     }
   }
 })
