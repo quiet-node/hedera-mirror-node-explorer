@@ -33,7 +33,7 @@ export class HgraphChartController extends XYChartController {
     //
 
     public constructor(readonly metricName: string) {
-        super("end_date", "total")
+        super("end_date", "total", true)
     }
 
     //

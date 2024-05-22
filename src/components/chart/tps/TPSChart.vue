@@ -24,10 +24,7 @@
 
 <template>
   <Chart :controller="controller">
-    <template v-slot:chartTitle>{{metricName.toUpperCase()}}<span class="has-text-grey"> per day</span></template>
-    <template v-slot:chartControl>
-      <PeriodSelector v-model:period-option="periodOption"/>
-    </template>
+    <template v-slot:chartTitle>TPS</template>
   </Chart>
 </template>
 
@@ -37,25 +34,15 @@
 
 <script lang="ts">
 
-//
-// https://www.amcharts.com/docs/v5/getting-started/integrations/vue/
-//
-
-import {defineComponent, onBeforeUnmount, onMounted} from "vue"
+import {defineComponent, onBeforeUnmount, onMounted} from "vue";
 import Chart from "@/components/chart/base/Chart.vue";
-import {HgraphChartController} from "@/components/chart/hgraph/HgraphChartController";
-import PeriodSelector from "@/components/chart/hgraph/PeriodSelector.vue";
+import {TPSChartController} from "@/components/chart/tps/TPSChartController";
 
 export default defineComponent({
-  components: {PeriodSelector, Chart},
-  props: {
-    metricName: {
-      type: String,
-      required: true
-    }
-  },
-  setup(props) {
-    const controller = new HgraphChartController(props.metricName)
+  name: 'TPSChart',
+  components: {Chart},
+  setup() {
+    const controller = new TPSChartController()
     onMounted(() => {
       controller.mount()
     })
@@ -65,7 +52,6 @@ export default defineComponent({
 
     return {
       controller,
-      periodOption: controller.period
     }
   }
 })

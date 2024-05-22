@@ -18,7 +18,7 @@
  *
  */
 
-import {ref, watch, WatchStopHandle} from "vue";
+import {ref, shallowRef, watch, WatchStopHandle} from "vue";
 import * as am5 from '@amcharts/amcharts5'
 import am5themes_Dark from "@amcharts/amcharts5/themes/Dark"
 import axios from "axios";
@@ -28,7 +28,7 @@ import axios from "axios";
 export abstract class ChartController {
 
     public readonly container = ref<HTMLDivElement|null>(null)
-    private readonly data= ref<unknown[]|null>(null)
+    private readonly data= shallowRef<unknown[]|null>(null)
     private readonly loading = ref<boolean>(false)
     private readonly loadError = ref<unknown|null>(null)
     private watchHandle: WatchStopHandle|null = null
@@ -111,7 +111,7 @@ export abstract class ChartController {
     private async startLoadingData() {
         this.loading.value = true
         try {
-            this.data.value = await this.loadData()
+            this.data.value = Object.preventExtensions(await this.loadData())
             this.loadError.value = null
         } catch(reason) {
             this.data.value = null

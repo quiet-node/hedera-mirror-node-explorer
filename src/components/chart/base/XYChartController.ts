@@ -46,7 +46,9 @@ export abstract class XYChartController extends ChartController {
     // Protected
     //
 
-    protected constructor(readonly valueXField: string, readonly valueYField: string) {
+    protected constructor(readonly valueXField: string,
+                          readonly valueYField: string,
+                          readonly logarithmic: boolean) {
         super()
     }
 
@@ -96,7 +98,7 @@ export abstract class XYChartController extends ChartController {
 
         const yAxis = am5xy.ValueAxis.new(root, {
             renderer: am5xy.AxisRendererY.new(root, {}),
-            logarithmic: true
+            logarithmic: this.logarithmic
         })
         chart.yAxes.push(yAxis);
 
@@ -113,7 +115,7 @@ export abstract class XYChartController extends ChartController {
                 labelText: "{valueY}"
             })
         })
-        this.series.columns.template.setAll({ strokeOpacity: 0 })
+        // this.series.columns.template.setAll({ strokeOpacity: 0 })
         chart.series.push(this.series)
 
         // Setup data processor

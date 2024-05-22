@@ -35,7 +35,7 @@
         <span class="h-is-secondary-title">Dashboards</span>
       </template>
       <template v-slot:content>
-        <div style="height:300px"/>
+        <TPSChart/>
       </template>
     </DashboardCard>
 
@@ -50,6 +50,8 @@
 
   </section>
 
+
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -63,11 +65,15 @@ import HbarMarketDashboard from "@/components/dashboard/HbarMarketDashboard.vue"
 import DashboardCard from "@/components/DashboardCard.vue";
 import DashboardItem from "@/components/dashboard/DashboardItem.vue";
 import TopMetricsCard from "@/components/dashboard/primary/TopMetricsCard.vue";
+import HgraphChart from "@/components/chart/hgraph/HgraphChart.vue";
+import TPSChart from "@/components/chart/tps/TPSChart.vue";
 
 export default defineComponent({
   name: 'PrimaryDashboard',
 
   components: {
+    TPSChart,
+    HgraphChart,
     TopMetricsCard,
     DashboardItem,
     DashboardCard,
