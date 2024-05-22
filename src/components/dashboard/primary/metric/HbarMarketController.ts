@@ -121,7 +121,7 @@ export class HbarMarketController extends MetricController {
     })
 
     private readonly hbarTotal = computed(() => {
-        const total = Number(this.lastSupply.value?.released_supply)
+        const total = Number(this.lastSupply.value?.total_supply)
         return total ? total / 100000000 : null
     })
 
