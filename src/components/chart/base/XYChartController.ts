@@ -25,7 +25,7 @@ import * as am5 from "@amcharts/amcharts5";
 export abstract class XYChartController extends ChartController {
 
     private xAxis: am5xy.DateAxis<am5xy.AxisRenderer>|null = null
-    private series: am5xy.ColumnSeries|null = null
+    private series: am5xy.XYSeries|null = null
 
     //
     // Protected (to be override if needed)
@@ -106,7 +106,7 @@ export abstract class XYChartController extends ChartController {
 
         // Add series
         // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
-        this.series = am5xy.ColumnSeries.new(root, {
+        const series = am5xy.LineSeries.new(root, {
             name: "Series",
             xAxis: this.xAxis,
             yAxis: yAxis,
@@ -116,8 +116,16 @@ export abstract class XYChartController extends ChartController {
                 labelText: "{valueY}"
             })
         })
-        // this.series.columns.template.setAll({ strokeOpacity: 0 })
-        chart.series.push(this.series)
+        series.fills.template.setAll({
+            fillOpacity: 0.2,
+            visible: true
+        })
+        series.strokes.template.setAll({
+            strokeOpacity: 0.9,
+            visible: true
+        })
+        chart.series.push(series)
+        this.series = series
 
         // Setup data processor
         const processor = this.makeDataProcessor(root)
