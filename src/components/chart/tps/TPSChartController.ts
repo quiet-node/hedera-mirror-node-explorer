@@ -33,7 +33,7 @@ export class TPSChartController extends XYChartController {
     //
 
     public constructor() {
-        super("time", "tps", false)
+        super("time", "tps", false, 4*1000)
     }
 
     //

@@ -33,7 +33,7 @@ export class HgraphChartController extends XYChartController {
     //
 
     public constructor(readonly metricName: string) {
-        super("end_date", "total", true)
+        super("end_date", "total", true, 0)
     }
 
     //
@@ -42,7 +42,7 @@ export class HgraphChartController extends XYChartController {
 
     mount() {
         super.mount()
-        this.periodWH = watch(this.period, () => this.refresh())
+        this.periodWH = watch(this.period, () => this.remount())
     }
 
     unmount(): void {

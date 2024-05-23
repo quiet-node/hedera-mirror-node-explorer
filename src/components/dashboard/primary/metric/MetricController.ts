@@ -38,6 +38,11 @@ export abstract class MetricController {
         this.mounted = false
     }
 
+    public remount(): void {
+        this.unmount()
+        this.mount()
+    }
+
     //
     // Protected (to be subclassed)
     //
@@ -54,7 +59,7 @@ export abstract class MetricController {
     private loadNow() {
         this.cancelNextLoad() // Should not be needed unless double mount()…
         this.update().finally(() => {
-            if (this.mounted) {
+            if (this.mounted && this.refreshPeriod > 0) {
                 this.scheduleNextLoad()
             } // else silently exists because we have been unmounted
         })

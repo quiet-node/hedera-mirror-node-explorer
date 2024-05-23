@@ -48,8 +48,9 @@ export abstract class XYChartController extends ChartController {
 
     protected constructor(readonly valueXField: string,
                           readonly valueYField: string,
-                          readonly logarithmic: boolean) {
-        super()
+                          readonly logarithmic: boolean,
+                          refreshPeriod: number) {
+        super(refreshPeriod)
     }
 
     //

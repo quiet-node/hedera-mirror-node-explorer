@@ -22,10 +22,11 @@ import {ref, shallowRef, watch, WatchStopHandle} from "vue";
 import * as am5 from '@amcharts/amcharts5'
 import am5themes_Dark from "@amcharts/amcharts5/themes/Dark"
 import axios from "axios";
+import {MetricController} from "@/components/dashboard/primary/metric/MetricController";
 
 
 
-export abstract class ChartController {
+export abstract class ChartController extends MetricController {
 
     public readonly container = ref<HTMLDivElement|null>(null)
     private readonly data= shallowRef<unknown[]|null>(null)
@@ -35,12 +36,12 @@ export abstract class ChartController {
     private chartRoot: am5.Root|null = null
 
     //
-    // Public
+    // MetricController
     //
 
     public mount() {
+        super.mount()
         this.watchHandle = watch(this.container, this.containerDidChange, { immediate: true })
-        this.refresh()
     }
 
     public unmount(): void {
@@ -53,14 +54,21 @@ export abstract class ChartController {
             this.chartRoot = null
         }
         this.data.value = null
+        super.unmount()
     }
 
-    public refresh() {
-        if (this.loading.value) {
-            console.warn("ChartController.refresh() aborts because loading is on-going")
-        } else {
-            this.startLoadingData().then()
+    protected async update(): Promise<void> {
+        this.loading.value = true
+        try {
+            this.data.value = Object.preventExtensions(await this.loadData())
+            this.loadError.value = null
+        } catch(reason) {
+            this.data.value = null
+            this.loadError.value = reason
+        } finally {
+            this.loading.value = false
         }
+        this.populate(this.data.value)
     }
 
     //
@@ -79,7 +87,9 @@ export abstract class ChartController {
     // Protected (tools for subclasses)
     //
 
-    protected constructor() {}
+    protected constructor(refreshPeriod: number) {
+        super(refreshPeriod)
+    }
 
     protected async loadDataFromGraphQL(query: string): Promise<unknown[]> {
         const url = "https://mainnet.hedera.api.hgraph.dev/v1/graphql"
@@ -106,20 +116,6 @@ export abstract class ChartController {
             this.setup(this.chartRoot)
         }
         // else this.chartRoot remains null
-    }
-
-    private async startLoadingData() {
-        this.loading.value = true
-        try {
-            this.data.value = Object.preventExtensions(await this.loadData())
-            this.loadError.value = null
-        } catch(reason) {
-            this.data.value = null
-            this.loadError.value = reason
-        } finally {
-            this.loading.value = false
-        }
-        this.populate(this.data.value)
     }
 
 }
