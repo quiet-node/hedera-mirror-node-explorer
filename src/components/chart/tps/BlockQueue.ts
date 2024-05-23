@@ -102,7 +102,8 @@ export class BlockQueue {
         }
         let result: Block[]
         if (i < blocks.length) {
-            result = blocks.slice().splice(0, i)
+            result = blocks.slice()
+            result.splice(0, i)
         } else {
             result = []
         }
