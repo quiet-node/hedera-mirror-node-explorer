@@ -23,68 +23,52 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
-
-    <TopMetricsCard/>
-
-    <TPSChartCard/>
-
     <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-secondary-title">List of Tokens</span>
-      </template>
-      <template v-slot:content>
-        <div style="height:300px"/>
-      </template>
+        <template v-slot:title>
+            <slot name="chartTitle"/>
+        </template>
+        <template v-slot:control>
+            <slot name="chartControl"/>
+        </template>
+        <template v-slot:content>
+            <div ref="container" style="height:300px"/>
+        </template>
     </DashboardCard>
-
-  </section>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                     TEMPLATE                                                    -->
+<!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
 
-import {defineComponent, inject} from "vue";
+//
+// https://www.amcharts.com/docs/v5/getting-started/integrations/vue/
+//
+
+import {defineComponent, PropType} from "vue"
 import DashboardCard from "@/components/DashboardCard.vue";
-import DashboardItem from "@/components/dashboard/DashboardItem.vue";
-import TopMetricsCard from "@/components/dashboard/primary/TopMetricsCard.vue";
-import TPSChartCard from "@/components/dashboard/primary/TPSChartCard.vue";
+import {ChartController} from "@/components/dashboard/primary/chart/base/ChartController";
 
 export default defineComponent({
-  name: 'PrimaryDashboard',
-
-  components: {
-    TPSChartCard,
-    TopMetricsCard,
-    DashboardItem,
-    DashboardCard
-  },
-
-  props: {
-    network: String
-  },
-
-  setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-    return {
-      isSmallScreen,
-      isTouchDevice,
+    components: {DashboardCard},
+    props: {
+        controller: {
+            type: Object as PropType<ChartController>,
+            required: true
+        }
+    },
+    setup(props) {
+        return {
+            container: props.controller.container
+        }
     }
-  }
 })
 
 </script>
 
-
-
 <!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                       STYLE                                                     -->
+<!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped/>

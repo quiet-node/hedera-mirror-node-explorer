@@ -18,14 +18,22 @@
  *
  */
 
-import {HgraphSeriesLoader} from "@/components/dashboard/primary/series/HgraphSeriesLoader";
 import {BlockQueue} from "@/components/dashboard/primary/series/BlockQueue";
 import {Block} from "@/schemas/HederaSchemas";
 import {Timestamp} from "@/utils/Timestamp";
+import {EntityLoaderV2} from "@/utils/loader/EntityLoaderV2";
 
-export class TPSSeriesLoader extends HgraphSeriesLoader<TPSRecord[]> {
+export class TPSSeriesLoader extends EntityLoaderV2<TPSRecord[]> {
 
     private readonly blockQueue = new BlockQueue(5 /* minutes */);
+
+    //
+    // Public
+    //
+
+    public constructor() {
+        super(15 * 1000, 200)
+    }
 
     //
     // HgraphSeriesLoader

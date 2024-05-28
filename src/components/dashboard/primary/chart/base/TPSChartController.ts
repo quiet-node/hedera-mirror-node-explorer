@@ -18,25 +18,26 @@
  *
  */
 
-import {EntityLoaderV2} from "@/utils/loader/EntityLoaderV2";
-import axios from "axios";
+import {XYChartController} from "@/components/dashboard/primary/chart/base/XYChartController"
+import {TPSSeriesLoader} from "@/components/dashboard/primary/series/TPSSeriesLoader"
+import * as am5 from "@amcharts/amcharts5"
 
-export abstract class HgraphSeriesLoader<E> extends EntityLoaderV2<E> {
+export class TPSChartController extends XYChartController {
 
     //
-    // Protected (tools for subclasses)
+    // Public
     //
 
-    protected async loadDataFromGraphQL(query: string): Promise<unknown[]> {
-        const url = "https://mainnet.hedera.api.hgraph.dev/v1/graphql"
-        const response = await axios.post<GraphQLResponse>(url, { query })
-        return Promise.resolve(response.data.data.all_metrics)
+    public constructor() {
+        super(new TPSSeriesLoader(), "time", "tps", false)
     }
 
-}
+    //
+    // XYChartController
+    //
 
-interface GraphQLResponse {
-    data: {
-        all_metrics: unknown[]
+    protected makeBaseInterval(): am5.time.ITimeInterval {
+        return { timeUnit: "millisecond", count: 1 }
     }
+
 }

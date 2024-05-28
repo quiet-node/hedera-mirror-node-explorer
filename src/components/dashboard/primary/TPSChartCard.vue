@@ -23,24 +23,9 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
-
-    <TopMetricsCard/>
-
-    <TPSChartCard/>
-
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-secondary-title">List of Tokens</span>
-      </template>
-      <template v-slot:content>
-        <div style="height:300px"/>
-      </template>
-    </DashboardCard>
-
-  </section>
-
+  <ChartCard :controller="controller">
+    <template v-slot:chartTitle>TPS</template>
+  </ChartCard>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -48,40 +33,29 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {defineComponent, inject} from "vue";
-import DashboardCard from "@/components/DashboardCard.vue";
-import DashboardItem from "@/components/dashboard/DashboardItem.vue";
-import TopMetricsCard from "@/components/dashboard/primary/TopMetricsCard.vue";
-import TPSChartCard from "@/components/dashboard/primary/TPSChartCard.vue";
+import {defineComponent, onBeforeUnmount, onMounted} from "vue";
+import ChartCard from "@/components/dashboard/primary/chart/base/ChartCard.vue";
+import {TPSChartController} from "@/components/dashboard/primary/chart/base/TPSChartController";
 
 export default defineComponent({
-  name: 'PrimaryDashboard',
+  name: 'TPSChartCard',
 
   components: {
-    TPSChartCard,
-    TopMetricsCard,
-    DashboardItem,
-    DashboardCard
-  },
-
-  props: {
-    network: String
+    ChartCard,
   },
 
   setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
+    const controller = new TPSChartController()
+    onMounted(() => controller.mount())
+    onBeforeUnmount(() => controller.unmount())
+
     return {
-      isSmallScreen,
-      isTouchDevice,
+      controller,
     }
   }
 })
 
 </script>
-
-
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
