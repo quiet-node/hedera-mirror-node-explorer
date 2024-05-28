@@ -48,8 +48,35 @@ export class Timestamp {
         return result
     }
 
+    public static fromMillis(millis: number): Timestamp  {
+        const seconds: number = Math.floor(millis / 1000)
+        const nanoseconds = (millis - 1000 * seconds) * 1_000_000
+        return new Timestamp(seconds, nanoseconds)
+    }
+
+    public static roundToMillis(timestamp: string): number|null {
+        let result: number|null
+        const ts = Timestamp.parse(timestamp)
+        if (ts !== null) {
+            result = ts.seconds * 1000 + Math.round(ts.nanoseconds / 1_000_000)
+        } else {
+            result = null
+        }
+        return result
+    }
+
     public toString(): string {
         return this.seconds + "." + this.nanoseconds.toString().padStart(9, "0")
+    }
+
+    public roundToMillis(): number {
+        return this.seconds * 1000 + Math.round(this.nanoseconds / 1_000_000)
+    }
+
+    public nanoSeconds(from: Timestamp): number {
+        const secondDelta = this.seconds - from.seconds
+        const nanosecondDelta = this.nanoseconds - from.nanoseconds
+        return secondDelta * 1_000_000_000 + nanosecondDelta
     }
 
     //
