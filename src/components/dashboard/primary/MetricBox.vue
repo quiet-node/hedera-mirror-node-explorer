@@ -24,29 +24,17 @@
 
 <template>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
-
-    <TopMetricsCard/>
-
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-secondary-title">Dashboards</span>
-      </template>
-      <template v-slot:content>
-        <div style="height:300px"/>
-      </template>
-    </DashboardCard>
-
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-secondary-title">List of Tokens</span>
-      </template>
-      <template v-slot:content>
-        <div style="height:300px"/>
-      </template>
-    </DashboardCard>
-
-  </section>
+  <div class="is-flex is-flex-direction-column h-has-page-background p-4" style="width: 300px; height: 100px">
+    <div>
+      <slot name="metricTitle"/>
+    </div>
+    <div class="dashboard-value">
+      <slot name="metricValue"/>
+    </div>
+    <div>
+      <slot name="metricVariation"/>
+    </div>
+  </div>
 
 </template>
 
@@ -56,40 +44,39 @@
 
 <script lang="ts">
 
-import {defineComponent, inject} from "vue";
-import DashboardCard from "@/components/DashboardCard.vue";
+import {defineComponent} from "vue";
 import DashboardItem from "@/components/dashboard/DashboardItem.vue";
-import TopMetricsCard from "@/components/dashboard/primary/TopMetricsCard.vue";
+import Variation from "@/components/dashboard/Variation.vue";
 
 export default defineComponent({
-  name: 'PrimaryDashboard',
+  name: 'MetricBox',
 
   components: {
-    TopMetricsCard,
-    DashboardItem,
-    DashboardCard
-  },
-
-  props: {
-    network: String
+    Variation,
+    DashboardItem
   },
 
   setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
     return {
-      isSmallScreen,
-      isTouchDevice,
     }
   }
 })
 
 </script>
 
-
-
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped/>
+
+<style scoped>
+
+.dashboard-value {
+  font-style: normal;
+  font-weight: 300;
+  font-size: 24px;
+  line-height: 28px;
+  letter-spacing: -0.05em;
+}
+
+</style>
