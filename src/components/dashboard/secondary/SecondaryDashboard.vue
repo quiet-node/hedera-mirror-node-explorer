@@ -23,58 +23,90 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
+  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
-  <div class="h-has-background-color is-flex is-justify-content-center h-mainnet-top-banner pt-1 pb-2">
-    <DashboardItem :value="currentNetworkDisplayName"/>
-  </div>
 
-  <template v-if="isMainNetwork">
-    <PrimaryDashboard/>
-  </template>
-  <template v-else>
-    <SecondaryDashboard/>
-  </template>
+    <div class="columns">
 
-  <Footer/>
+      <div class="column">
+        <DashboardCard data-cy="cryptoTransfers">
+          <template v-slot:title>
+            <span class="h-is-secondary-title">Crypto Transfers</span>
+          </template>
+          <template v-slot:control>
+            <PlayPauseButton v-bind:controller="cryptoTableController"/>
+          </template>
+          <template v-slot:content>
+            <CryptoTransactionTable v-bind:controller="cryptoTableController"/>
+          </template>
+        </DashboardCard>
+      </div>
 
+    </div>
+
+
+    <div class="columns is-multiline">
+
+          <div class="column" :class="{'is-full': !displaySideBySide}">
+            <DashboardCard data-cy="smartContractCalls">
+              <template v-slot:title>
+                <span class="h-is-secondary-title">Smart Contract Calls</span>
+              </template>
+              <template v-slot:control>
+                <PlayPauseButton v-bind:controller="contractTableController"/>
+              </template>
+              <template v-slot:content>
+                <ContractCallTransactionTable v-bind:controller="contractTableController"/>
+              </template>
+            </DashboardCard>
+          </div>
+
+          <div class="column">
+            <DashboardCard data-cy="hcsMessages">
+              <template v-slot:title>
+                <span class="h-is-secondary-title">HCS Messages</span>
+              </template>
+              <template v-slot:control>
+                <PlayPauseButton v-bind:controller="messageTableController"/>
+              </template>
+              <template v-slot:content>
+                <MessageTransactionTable v-bind:controller="messageTableController"/>
+              </template>
+            </DashboardCard>
+          </div>
+
+        </div>
+
+  </section>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                      SCRIPT                                                     -->
+<!--                                                     TEMPLATE                                                    -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
-
-import DashboardCard from "@/components/DashboardCard.vue";
-import PlayPauseButton from "@/components/PlayPauseButton.vue";
-import CryptoTransactionTable from "@/components/dashboard/secondary/CryptoTransactionTable.vue";
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from "vue";
 import MessageTransactionTable from "@/components/dashboard/secondary/MessageTransactionTable.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
+import DashboardCard from "@/components/DashboardCard.vue";
 import ContractCallTransactionTable from "@/components/dashboard/secondary/ContractCallTransactionTable.vue";
-import {TransactionType} from "@/schemas/HederaSchemas";
-import Footer from "@/components/Footer.vue";
-import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import {useRouter} from "vue-router";
+import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import {TransactionType} from "@/schemas/HederaSchemas";
 import {routeManager} from "@/router";
 import {networkRegistry, NetworkRegistry} from "@/schemas/NetworkRegistry";
-import SecondaryDashboard from "@/components/dashboard/secondary/SecondaryDashboard.vue";
-import PrimaryDashboard from "@/components/dashboard/primary/PrimaryDashboard.vue";
-import DashboardItem from "@/components/dashboard/DashboardItem.vue";
+import CryptoTransactionTable from "@/components/dashboard/secondary/CryptoTransactionTable.vue";
 
 export default defineComponent({
-  name: 'MainDashboard',
+  name: 'SecondaryDashboard',
 
   components: {
-    DashboardItem,
-    PrimaryDashboard,
-    SecondaryDashboard,
-    Footer,
-    PlayPauseButton,
-    DashboardCard,
     CryptoTransactionTable,
-    MessageTransactionTable,
     ContractCallTransactionTable,
+    DashboardCard,
+    PlayPauseButton,
+    MessageTransactionTable,
   },
 
   props: {
@@ -85,6 +117,7 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    const displaySideBySide = inject('isLargeScreen', true)
 
     const router = useRouter()
     const pageSize = computed(() => isMediumScreen ? 5 : 6)
@@ -132,6 +165,7 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
+      displaySideBySide,
       cryptoTableController,
       messageTableController,
       contractTableController,
@@ -140,8 +174,7 @@ export default defineComponent({
       currentNetworkDisplayName
     }
   }
-
-});
+})
 
 </script>
 
@@ -149,4 +182,5 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped/>
+

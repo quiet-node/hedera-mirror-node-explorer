@@ -32,12 +32,11 @@ import {
     SAMPLE_TRANSACTIONS
 } from "../Mocks";
 import MainDashboard from "@/pages/MainDashboard.vue";
-import HbarMarketDashboard from "@/components/dashboard/HbarMarketDashboard.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
-import CryptoTransactionTable from "@/components/dashboard/CryptoTransactionTable.vue";
-import ContractCallTransactionTable from "@/components/dashboard/ContractCallTransactionTable.vue";
-import MessageTransactionTable from "@/components/dashboard/MessageTransactionTable.vue";
+import CryptoTransactionTable from "@/components/dashboard/secondary/CryptoTransactionTable.vue";
+import ContractCallTransactionTable from "@/components/dashboard/secondary/ContractCallTransactionTable.vue";
+import MessageTransactionTable from "@/components/dashboard/secondary/MessageTransactionTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
@@ -56,7 +55,7 @@ describe("MainDashboard.vue", () => {
 
     test("no props", async () => {
 
-        await router.push({name: "MainDashboard", params: {network: 'mainnet'}})
+        await router.push({name: "MainDashboard", params: {network: 'testnet'}})
 
         const mock = new MockAdapter(axios)
 
@@ -92,20 +91,6 @@ describe("MainDashboard.vue", () => {
 
         await flushPromises()
         // console.log(wrapper.html())
-
-        const dash = wrapper.findComponent(HbarMarketDashboard)
-        expect(dash.exists()).toBe(true)
-        expect(dash.text()).toBe(
-            "$0.2460" +
-            "0.00%" +
-            "HBAR PRICE" +
-            "$5,186,816,738" +
-            "0.00%" +
-            "HBAR MARKET CAP" +
-            "21,084,620,884.43" +
-            "HBAR RELEASED" +
-            "50,000,000,000" +
-            "HBAR TOTAL")
 
         const cards = wrapper.findAllComponents(DashboardCard)
         expect(cards.length).toBe(3)
