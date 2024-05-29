@@ -32,7 +32,7 @@ export class TPSSeriesLoader extends EntityLoaderV2<TPSRecord[]> {
     //
 
     public constructor() {
-        super(15 * 1000, 200)
+        super(15 * 1000, 20)
     }
 
     //

@@ -57,6 +57,10 @@ export abstract class EntityLoaderV2<E> {
 
     public readonly entity = computed(() => this.entityRef.value)
 
+    public readonly refreshEnabled = computed(() => {
+        return this.refreshPeriod > 0 && this.maxRefreshCount > 1
+    })
+
     public readonly state = computed(() => {
 
         /*

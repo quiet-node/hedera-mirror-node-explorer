@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <ChartCard :controller="controller">
+  <ChartCard :chartController="controller">
     <template v-slot:chartTitle>TPS</template>
   </ChartCard>
 </template>

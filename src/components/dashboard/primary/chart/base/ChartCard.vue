@@ -25,13 +25,13 @@
 <template>
     <DashboardCard>
         <template v-slot:title>
-            <slot name="chartTitle"/>
+          <slot name="chartTitle"/>
         </template>
         <template v-slot:control>
-            <slot name="chartControl"/>
+          <PlayPauseButton :controller="playPauseController"/>
         </template>
         <template v-slot:content>
-            <div ref="container" style="height:300px"/>
+          <div ref="container" style="height:300px"/>
         </template>
     </DashboardCard>
 </template>
@@ -46,24 +46,47 @@
 // https://www.amcharts.com/docs/v5/getting-started/integrations/vue/
 //
 
-import {defineComponent, PropType} from "vue"
+import {computed, ComputedRef, defineComponent, PropType} from "vue"
 import DashboardCard from "@/components/DashboardCard.vue";
 import {ChartController} from "@/components/dashboard/primary/chart/base/ChartController";
+import {EntityLoaderState, EntityLoaderV2} from "@/utils/loader/EntityLoaderV2";
+import PlayPauseButton, {PlayPauseController} from "@/components/PlayPauseButton.vue";
 
 export default defineComponent({
-    components: {DashboardCard},
+    components: {PlayPauseButton, DashboardCard},
     props: {
-        controller: {
+        chartController: {
             type: Object as PropType<ChartController>,
             required: true
         }
     },
     setup(props) {
+        const loader = props.chartController.loader
         return {
-            container: props.controller.container
+          container: props.chartController.container,
+          playPauseController: new LoaderPlayPauseController(loader),
+          refreshEnabled: loader.refreshEnabled
         }
     }
 })
+
+export class LoaderPlayPauseController implements PlayPauseController {
+
+  constructor(readonly loader: EntityLoaderV2<unknown>) {}
+
+  readonly autoRefresh = computed(() => {
+    return this.loader.state.value == EntityLoaderState.LOADING
+        || this.loader.state.value == EntityLoaderState.SLEEPING
+  })
+
+  startAutoRefresh(): void {
+    this.loader.resume()
+  }
+
+  stopAutoRefresh(): void {
+    this.loader.pause()
+  }
+}
 
 </script>
 
