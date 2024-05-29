@@ -24,7 +24,7 @@
 
 <template>
   <ChartCard :chartController="controller">
-    <template v-slot:chartTitle>TPS</template>
+    <template v-slot:chartTitle>Transactions per Second (TPS)</template>
   </ChartCard>
 </template>
 

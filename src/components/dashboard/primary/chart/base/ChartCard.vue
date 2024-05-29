@@ -25,7 +25,9 @@
 <template>
     <DashboardCard>
         <template v-slot:title>
-          <slot name="chartTitle"/>
+          <span class="h-is-secondary-title">
+            <slot name="chartTitle"/>
+          </span>
         </template>
         <template v-slot:control>
           <PlayPauseButton :controller="playPauseController"/>
