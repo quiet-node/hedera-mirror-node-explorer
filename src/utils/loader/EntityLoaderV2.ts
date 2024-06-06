@@ -128,6 +128,7 @@ export abstract class EntityLoaderV2<E> {
         if (this.requestCount.value == captureRequestCount) {
             this.entityRef.value = newResponse ?? null
             this.errorRef.value = null
+            console.log("this.requestCount=" + this.requestCount.value + ", this.mounted=" + this.mounted.value + ", this.timeoutID=" + this.timeoutID + ", captureRequestCount=" + captureRequestCount)
             this.concludeLoad()
         }
         // else silently exits because unmount() has been called during load
@@ -137,6 +138,7 @@ export abstract class EntityLoaderV2<E> {
         if (this.requestCount.value == captureRequestCount) {
             this.entityRef.value = null
             this.errorRef.value = reason
+            console.log("this.requestCount=" + this.requestCount.value + ", this.mounted=" + this.mounted.value + ", this.timeoutID=" + this.timeoutID + ", captureRequestCount=" + captureRequestCount)
             this.concludeLoad()
         }
         // else silently exits because unmount() has been called during load
