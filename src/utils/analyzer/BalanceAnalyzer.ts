@@ -79,12 +79,14 @@ export class BalanceAnalyzer extends EntityLoaderV2<BalancesResponse> {
     }
 
     protected async load(): Promise<BalancesResponse | null> {
+        console.log("BalanceAnalyzer.load: begins with window=" + window)
         let result: BalancesResponse|null
         if (this.accountId.value !== null) {
             result = await BalanceCache.instance.lookup(this.accountId.value, true)
         } else {
             result = null
         }
+        console.log("BalanceAnalyzer.load: ends with window=" + window)
         return Promise.resolve(result)
     }
 }
