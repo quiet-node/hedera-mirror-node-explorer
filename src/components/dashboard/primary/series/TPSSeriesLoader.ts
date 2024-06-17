@@ -71,8 +71,12 @@ export class TPSSeriesLoader extends EntityLoaderV2<TPSRecord[]> {
             const toTT = Timestamp.parse(toTimestamp)
             if (fromTT && toTT) {
                 const duration = toTT.nanoSeconds(fromTT) / 1_000_000_000
-                const tps = transactionCount / duration
-                result = { time: toTT.roundToMillis(), tps: tps }
+                if (duration > 0) {
+                    const tps = transactionCount / duration
+                    result = { time: toTT.roundToMillis(), tps: tps }
+                } else {
+                    result = null
+                }
             } else {
                 result = null
             }
