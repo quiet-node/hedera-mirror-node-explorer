@@ -25,7 +25,8 @@
 <template>
   <button class="button is-white is-small is-uppercase"
           @click="handleClick"
-          :disabled="!buttonEnabled">
+          :disabled="!buttonEnabled"
+          :class="{'is-invisible': invisible}">
     <slot/>
   </button>
 </template>
@@ -55,6 +56,10 @@ export default defineComponent({
     enabled: {
       type: Boolean,
       default: true
+    },
+    invisible: {
+      type: Boolean,
+      default: false
     }
   },
   emits: ["action"],
