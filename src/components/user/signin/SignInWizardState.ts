@@ -20,7 +20,8 @@
 
 
 import {WizardState} from "@/components/dialog/wizard/WizardState";
-import axios from "axios";
+import {BoxAPI, UserSession} from "@/utils/box/BoxAPI";
+import {BoxManager} from "@/utils/box/BoxManager";
 
 export class SignInWizardState extends WizardState {
 
@@ -33,13 +34,8 @@ export class SignInWizardState extends WizardState {
     public verificationToken: string|null = null
     public verificationError: unknown = null
     public verificationCode = ""
-    public confirmationResponse: EmailConfirmationResponse|null = null
+    public confirmationResponse: UserSession|null = null
     public confirmationError: unknown = null
-
-    private readonly privateAxios = axios.create({
-        // baseURL: "/api",
-        withCredentials: true,
-    })
 
     //
     // WizardState
@@ -99,12 +95,8 @@ export class SignInWizardState extends WizardState {
 
     private async requestEmailVerification(): Promise<void> {
         try {
-            const url = "http://localhost:3000/user"
-            const request = {
-                "email": this.emailAddress
-            }
-            const r = await this.privateAxios.post<EmailVerificationResponse>(url, request)
-            this.verificationToken = r.data.verificationToken
+            const r = await BoxAPI.requestEmailVerification(this.emailAddress, false)
+            this.verificationToken = r.verificationToken
             this.verificationError = null
         } catch(reason) {
             console.log("Email verification failed: " + reason)
@@ -123,29 +115,12 @@ export class SignInWizardState extends WizardState {
 
     private async confirmEmailVerification(): Promise<void> {
         try {
-            const url = "http://localhost:3000/user/me/verification"
-            const request = {
-                token: this.verificationToken!,
-                pin: this.verificationCode
-            }
-            const r = await this.privateAxios.post<EmailConfirmationResponse>(url, request)
-            this.confirmationResponse = r.data
+            this.confirmationResponse = await BoxAPI.confirmEmailVerification(this.verificationToken!, this.verificationCode)
             this.confirmationError = null
+            await BoxManager.instance.fetchSession()
         } catch(reason) {
             this.confirmationResponse = null
             this.confirmationError = reason
         }
-    }
-}
-
-interface EmailVerificationResponse {
-    verificationToken: string
-}
-
-interface EmailConfirmationResponse {
-    user: {
-        userId: string,
-        email: string,
-        profile: object
     }
 }
