@@ -37,6 +37,12 @@
     <template #wizardStep3>
       <SignInWizardStep3 v-model:state="wizardState"/>
     </template>
+    <template #wizardStep4>
+      <SignInWizardStep4 v-model:state="wizardState"/>
+    </template>
+    <template #wizardStep5>
+      <SignInWizardStep5 v-model:state="wizardState"/>
+    </template>
   </Wizard>
 </template>
 
@@ -52,6 +58,8 @@ import SignInWizardStep2 from "@/components/user/signin/SignInWizardStep2.vue";
 import SignInWizardStep3 from "@/components/user/signin/SignInWizardStep3.vue";
 import {SignInWizardState} from "@/components/user/signin/SignInWizardState";
 import {ref} from "vue";
+import SignInWizardStep4 from "@/components/user/signin/SignInWizardStep4.vue";
+import SignInWizardStep5 from "@/components/user/signin/SignInWizardStep5.vue";
 
 //
 // Props

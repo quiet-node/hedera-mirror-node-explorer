@@ -42,6 +42,18 @@
         <div v-if="$slots.wizardStep4"  :class="{'is-invisible': currentStep != 4}">
           <slot name="wizardStep4"/>
         </div>
+        <div v-if="$slots.wizardStep5"  :class="{'is-invisible': currentStep != 5}">
+          <slot name="wizardStep5"/>
+        </div>
+        <div v-if="$slots.wizardStep6"  :class="{'is-invisible': currentStep != 6}">
+          <slot name="wizardStep6"/>
+        </div>
+        <div v-if="$slots.wizardStep7"  :class="{'is-invisible': currentStep != 7}">
+          <slot name="wizardStep7"/>
+        </div>
+        <div v-if="$slots.wizardStep8"  :class="{'is-invisible': currentStep != 8}">
+          <slot name="wizardStep8"/>
+        </div>
       </div>
     </template>
     <template #dialogInputButtons>
@@ -137,7 +149,7 @@ const handleNext = async () => {
 
 const computeLastStepIndex = () => {
   let result = 0
-  const maxStepCount = 4
+  const maxStepCount = 8
   const slots = useSlots()
   for (let i = 1; i <= maxStepCount; i += 1) {
     if ("wizardStep" + i in slots) {

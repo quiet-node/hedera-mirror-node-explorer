@@ -25,18 +25,18 @@
 
 <template>
   <div class="columns">
-    <div class="column is-one-quarter">First Name</div>
+    <div class="column is-one-quarter">Choose Password</div>
     <div class="column">
-      <input class="input is-small has-text-white" v-model="firstName"/>
+      <input class="input is-small has-text-white" type="password" v-model="password1"/>
     </div>
   </div>
   <div class="columns">
-    <div class="column is-one-quarter">Last Name</div>
+    <div class="column is-one-quarter">Confirm Password</div>
     <div class="column">
-      <input class="input is-small has-text-white" v-model="lastName"/>
+      <input class="input is-small has-text-white" type="password" v-model="password2"/>
     </div>
   </div>
-  <div v-if="state.userProfileError !== null">{{ state.confirmationError }}</div>
+  <div v-if="state.passwordError !== null">{{ state.passwordError }}</div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -50,14 +50,14 @@ import {SignInWizardState} from "@/components/user/signin/SignInWizardState";
 
 const state = defineModel('state', { type: Object as PropType<SignInWizardState>, required: true })
 
-const firstName = ref<string>(state.value.firstName)
-watch(firstName, () => {
-  state.value.firstName = firstName.value
+const password1 = ref<string>(state.value.password1)
+watch(password1, () => {
+  state.value.password1 = password1.value
 })
 
-const lastName = ref<string>(state.value.lastName)
-watch(lastName, () => {
-  state.value.lastName = lastName.value
+const password2 = ref<string>(state.value.password2)
+watch(password2, () => {
+  state.value.password2 = password2.value
 })
 
 </script>

@@ -33,11 +33,13 @@ import "./assets/styles/explorer-bulma.css";
 import "./assets/styles/explorer-oruga.css";
 import "./assets/styles/explorer.css";
 import {AxiosMonitor} from "@/utils/AxiosMonitor";
+import {BoxManager} from "@/utils/box/BoxManager";
 
 library.add(faForward);
 export default FontAwesomeIcon;
 
 AxiosMonitor.instance.setTargetAxios(axios)
+BoxManager.instance.fetchSession().finally()
 
 const app = createApp(App)
 app.component("font-awesome-icon", FontAwesomeIcon)

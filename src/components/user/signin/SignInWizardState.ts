@@ -20,7 +20,7 @@
 
 
 import {WizardState} from "@/components/dialog/wizard/WizardState";
-import {BoxAPI, UserSession} from "@/utils/box/BoxAPI";
+import {BoxAPI, UserProfile, UserRole, UserSession} from "@/utils/box/BoxAPI";
 import {BoxManager} from "@/utils/box/BoxManager";
 
 export class SignInWizardState extends WizardState {
@@ -36,6 +36,12 @@ export class SignInWizardState extends WizardState {
     public verificationCode = ""
     public confirmationResponse: UserSession|null = null
     public confirmationError: unknown = null
+    public firstName = ""
+    public lastName = ""
+    public userProfileError: unknown = null
+    public password1 = ""
+    public password2 = ""
+    public passwordError: unknown = null
 
     //
     // WizardState
@@ -53,6 +59,12 @@ export class SignInWizardState extends WizardState {
                 break
             case 2:
                 result = this.isValidEmailAddress() && this.isValidVerificationCode()
+                break
+            case 3:
+                result = this.isValidProfile()
+                break
+            case 4:
+                result = this.isValidPassword()
                 break
             default:
                 result = false
@@ -72,6 +84,14 @@ export class SignInWizardState extends WizardState {
                 await this.confirmEmailVerification()
                 result = this.confirmationResponse !== null
                 break;
+            case 3:
+                await this.updateUserProfile()
+                result = this.userProfileError === null
+                break
+            case 4:
+                await this.updatePassword()
+                result = this.passwordError === null
+                break
             default:
                 result = false
                 break
@@ -121,6 +141,47 @@ export class SignInWizardState extends WizardState {
         } catch(reason) {
             this.confirmationResponse = null
             this.confirmationError = reason
+        }
+    }
+
+    //
+    // Private (user profile)
+    //
+
+    private isValidProfile(): boolean {
+        return true
+    }
+
+    private async updateUserProfile(): Promise<void> {
+        const profile: UserProfile = {
+            firstName: this.firstName,
+            lastName: this.lastName,
+            countryOfCitizenship: "FR",
+            countryOfResidence: "FR",
+            role: UserRole.developer
+        }
+        try {
+            await BoxAPI.updateUserProfile(profile)
+            this.userProfileError = null
+        } catch(reason) {
+            this.userProfileError = reason
+        }
+    }
+
+    //
+    // Private (password)
+    //
+
+    private isValidPassword(): boolean {
+        return this.password1 == this.password2 && this.password1.length >= 2
+    }
+
+    private async updatePassword(): Promise<void> {
+        try {
+            await BoxAPI.updateUserPassword(this.password1)
+            this.passwordError = null
+        } catch(reason) {
+            this.passwordError = reason
         }
     }
 }

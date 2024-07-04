@@ -40,13 +40,14 @@ export class BoxManager {
     }
 
     public async fetchSession(): Promise<void> {
-        try {
-            this.session.value = await BoxAPI.fetchUserSession()
-        } catch(reason) {
-            this.session.value = null
-        } finally {
-            this.fetchCount.value += 1
+        if (this.enabled) {
+            try {
+                this.session.value = await BoxAPI.fetchUserSession()
+            } catch(reason) {
+                this.session.value = null
+            }
         }
+        this.fetchCount.value += 1
     }
 
     public status = computed<BoxStatus>(() => {

@@ -24,19 +24,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="columns">
-    <div class="column is-one-quarter">First Name</div>
-    <div class="column">
-      <input class="input is-small has-text-white" v-model="firstName"/>
-    </div>
-  </div>
-  <div class="columns">
-    <div class="column is-one-quarter">Last Name</div>
-    <div class="column">
-      <input class="input is-small has-text-white" v-model="lastName"/>
-    </div>
-  </div>
-  <div v-if="state.userProfileError !== null">{{ state.confirmationError }}</div>
+  <p>You are now registered. You can now go and sign in as {{ emailAddress }}</p>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -45,20 +33,12 @@
 
 <script setup lang="ts">
 
-import {PropType, ref, watch} from "vue";
+import {computed, PropType} from "vue";
 import {SignInWizardState} from "@/components/user/signin/SignInWizardState";
 
 const state = defineModel('state', { type: Object as PropType<SignInWizardState>, required: true })
 
-const firstName = ref<string>(state.value.firstName)
-watch(firstName, () => {
-  state.value.firstName = firstName.value
-})
-
-const lastName = ref<string>(state.value.lastName)
-watch(lastName, () => {
-  state.value.lastName = lastName.value
-})
+const emailAddress = computed(() => state.value.emailAddress)
 
 </script>
 
