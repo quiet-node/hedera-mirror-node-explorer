@@ -64,6 +64,13 @@ export class BoxAPI {
     // Session
     //
 
+    public static async createUserSession(email: string, password: string): Promise<UserSession> {
+        const url = "/session"
+        const recaptchaToken = "dummy"
+        const request = { email, password, recaptchaToken }
+        return (await this.privateAxios.post<UserSession>(url, request)).data
+    }
+
     public static async fetchUserSession(): Promise<UserSession> {
         const url = "/session/current"
         return (await this.privateAxios.get<UserSession>(url)).data

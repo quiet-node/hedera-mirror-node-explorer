@@ -48,6 +48,7 @@
       </div>
     </div>
     <SignUpWizard :visible="showSignUpWizard"/>
+    <SignInDialog :visible="showSignInDialog"/>
   </div>
 </template>
 
@@ -60,6 +61,7 @@
 import {computed, ref} from "vue";
 import {BoxManager, BoxStatus} from "@/utils/box/BoxManager";
 import SignUpWizard from "@/components/user/signup/SignUpWizard.vue";
+import SignInDialog from "@/components/user/SignInDialog.vue";
 
 const enabled = BoxManager.instance.enabled
 const unknown = computed(() => BoxManager.instance.status.value == BoxStatus.unknown)

@@ -40,6 +40,16 @@ export class BoxManager {
         this.enabled = boxURL != null
     }
 
+    public async signIn(email: string, password: string): Promise<void> {
+        if (this.enabled) {
+            try {
+                this.session.value = await BoxAPI.createUserSession(email, password)
+            } catch(reason) {
+                this.session.value = null
+            }
+        }
+    }
+
     public async fetchSession(): Promise<void> {
         if (this.enabled) {
             try {
