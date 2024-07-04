@@ -23,7 +23,7 @@ import {WizardState} from "@/components/dialog/wizard/WizardState";
 import {BoxAPI, UserProfile, UserRole, UserSession} from "@/utils/box/BoxAPI";
 import {BoxManager} from "@/utils/box/BoxManager";
 
-export class SignInWizardState extends WizardState {
+export class SignUpWizardState extends WizardState {
 
 
     //

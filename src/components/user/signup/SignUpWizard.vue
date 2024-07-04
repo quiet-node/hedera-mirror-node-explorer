@@ -24,7 +24,26 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <p>You are now registered as {{ emailAddress }}</p>
+  <Wizard :state="wizardState" :visible="visible">
+    <template #wizardTitle>
+      <span class="h-is-primary-title">Sign Up</span>
+    </template>
+    <template #wizardStep1>
+      <SignUpWizardStep1 v-model:state="wizardState"/>
+    </template>
+    <template #wizardStep2>
+      <SignUpWizardStep2 v-model:state="wizardState"/>
+    </template>
+    <template #wizardStep3>
+      <SignUpWizardStep3 v-model:state="wizardState"/>
+    </template>
+    <template #wizardStep4>
+      <SignUpWizardStep4 v-model:state="wizardState"/>
+    </template>
+    <template #wizardStep5>
+      <SignUpWizardStep5 v-model:state="wizardState"/>
+    </template>
+  </Wizard>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -33,12 +52,21 @@
 
 <script setup lang="ts">
 
-import {computed, PropType} from "vue";
-import {SignInWizardState} from "@/components/user/signin/SignInWizardState";
+import Wizard from "@/components/dialog/wizard/Wizard.vue";
+import SignUpWizardStep1 from "@/components/user/signup/SignUpWizardStep1.vue";
+import SignUpWizardStep2 from "@/components/user/signup/SignUpWizardStep2.vue";
+import SignUpWizardStep3 from "@/components/user/signup/SignUpWizardStep3.vue";
+import {SignUpWizardState} from "@/components/user/signup/SignUpWizardState";
+import {ref} from "vue";
+import SignUpWizardStep4 from "@/components/user/signup/SignUpWizardStep4.vue";
+import SignUpWizardStep5 from "@/components/user/signup/SignUpWizardStep5.vue";
 
-const state = defineModel('state', { type: Object as PropType<SignInWizardState>, required: true })
+//
+// Props
+//
 
-const emailAddress = computed(() => state.value.emailAddress)
+const visible = defineModel('visible', { type: Boolean, default: true })
+const wizardState = ref<SignUpWizardState>(new SignUpWizardState())
 
 </script>
 

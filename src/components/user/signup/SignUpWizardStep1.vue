@@ -24,26 +24,13 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <Wizard :state="wizardState" :visible="visible">
-    <template #wizardTitle>
-      <span class="h-is-primary-title">Sign In</span>
-    </template>
-    <template #wizardStep1>
-      <SignInWizardStep1 v-model:state="wizardState"/>
-    </template>
-    <template #wizardStep2>
-      <SignInWizardStep2 v-model:state="wizardState"/>
-    </template>
-    <template #wizardStep3>
-      <SignInWizardStep3 v-model:state="wizardState"/>
-    </template>
-    <template #wizardStep4>
-      <SignInWizardStep4 v-model:state="wizardState"/>
-    </template>
-    <template #wizardStep5>
-      <SignInWizardStep5 v-model:state="wizardState"/>
-    </template>
-  </Wizard>
+  <div class="columns">
+    <div class="column is-one-quarter">e-mail Address</div>
+    <div class="column">
+      <input class="input is-small has-text-white" type="email" v-model="emailAddress"/>
+      <template v-if="state.verificationError !== null" class="is-small">{{ state.verificationError }}</template>
+    </div>
+  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -52,21 +39,15 @@
 
 <script setup lang="ts">
 
-import Wizard from "@/components/dialog/wizard/Wizard.vue";
-import SignInWizardStep1 from "@/components/user/signin/SignInWizardStep1.vue";
-import SignInWizardStep2 from "@/components/user/signin/SignInWizardStep2.vue";
-import SignInWizardStep3 from "@/components/user/signin/SignInWizardStep3.vue";
-import {SignInWizardState} from "@/components/user/signin/SignInWizardState";
-import {ref} from "vue";
-import SignInWizardStep4 from "@/components/user/signin/SignInWizardStep4.vue";
-import SignInWizardStep5 from "@/components/user/signin/SignInWizardStep5.vue";
+import {SignUpWizardState} from "@/components/user/signup/SignUpWizardState";
+import {PropType, ref, watch} from "vue";
 
-//
-// Props
-//
+const state = defineModel('state', { type: Object as PropType<SignUpWizardState>, required: true })
 
-const visible = defineModel('visible', { type: Boolean, default: true })
-const wizardState = ref<SignInWizardState>(new SignInWizardState())
+const emailAddress = ref<string>(state.value.emailAddress)
+watch(emailAddress, () => {
+  state.value.inputEmailAddress(emailAddress.value)
+})
 
 </script>
 

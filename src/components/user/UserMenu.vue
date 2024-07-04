@@ -47,7 +47,7 @@
         <a href="#"  class="dropdown-item" @click="handleSignIn">Sign In</a>
       </div>
     </div>
-    <SignInWizard :visible="showSignInWizard"/>
+    <SignUpWizard :visible="showSignUpWizard"/>
   </div>
 </template>
 
@@ -59,7 +59,7 @@
 
 import {computed, ref} from "vue";
 import {BoxManager, BoxStatus} from "@/utils/box/BoxManager";
-import SignInWizard from "@/components/user/signin/SignInWizard.vue";
+import SignUpWizard from "@/components/user/signup/SignUpWizard.vue";
 
 const enabled = BoxManager.instance.enabled
 const unknown = computed(() => BoxManager.instance.status.value == BoxStatus.unknown)
@@ -77,9 +77,9 @@ const pullDown = () => {
 //
 // signUp
 //
-const showSignUpDialog = ref<boolean>(false)
+const showSignUpWizard = ref<boolean>(false)
 const handleSignUp = () => {
-  showSignUpDialog.value = true
+  showSignUpWizard.value = true
   visible.value = false
 }
 
@@ -87,9 +87,9 @@ const handleSignUp = () => {
 // signIn
 //
 
-const showSignInWizard = ref<boolean>(false)
+const showSignInDialog = ref<boolean>(false)
 const handleSignIn = () => {
-  showSignInWizard.value = true
+  showSignInDialog.value = true
   visible.value = false
 }
 

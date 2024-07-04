@@ -24,13 +24,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="columns">
-    <div class="column is-one-quarter">Verification Code</div>
-    <div class="column">
-      <input class="input is-small has-text-white" type="email" v-model="verificationCode"/>
-      <template v-if="state.confirmationError !== null">{{ state.confirmationError }}</template>
-    </div>
-  </div>
+  <p>You are now registered as {{ emailAddress }}</p>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -39,16 +33,12 @@
 
 <script setup lang="ts">
 
-import {PropType, ref, watch} from "vue";
-import {SignInWizardState} from "@/components/user/signin/SignInWizardState";
+import {computed, PropType} from "vue";
+import {SignUpWizardState} from "@/components/user/signup/SignUpWizardState";
 
-const state = defineModel('state', { type: Object as PropType<SignInWizardState>, required: true })
+const state = defineModel('state', { type: Object as PropType<SignUpWizardState>, required: true })
 
-const verificationCode = ref<string>(state.value.verificationCode)
-watch(verificationCode, () => {
-  state.value.inputVerificationCode(verificationCode.value)
-})
-
+const emailAddress = computed(() => state.value.emailAddress)
 
 </script>
 

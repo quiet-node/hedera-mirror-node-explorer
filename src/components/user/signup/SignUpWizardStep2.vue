@@ -25,18 +25,12 @@
 
 <template>
   <div class="columns">
-    <div class="column is-one-quarter">First Name</div>
+    <div class="column is-one-quarter">Verification Code</div>
     <div class="column">
-      <input class="input is-small has-text-white" v-model="firstName"/>
+      <input class="input is-small has-text-white" type="email" v-model="verificationCode"/>
+      <template v-if="state.confirmationError !== null">{{ state.confirmationError }}</template>
     </div>
   </div>
-  <div class="columns">
-    <div class="column is-one-quarter">Last Name</div>
-    <div class="column">
-      <input class="input is-small has-text-white" v-model="lastName"/>
-    </div>
-  </div>
-  <div v-if="state.userProfileError !== null">{{ state.confirmationError }}</div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -46,19 +40,15 @@
 <script setup lang="ts">
 
 import {PropType, ref, watch} from "vue";
-import {SignInWizardState} from "@/components/user/signin/SignInWizardState";
+import {SignUpWizardState} from "@/components/user/signup/SignUpWizardState";
 
-const state = defineModel('state', { type: Object as PropType<SignInWizardState>, required: true })
+const state = defineModel('state', { type: Object as PropType<SignUpWizardState>, required: true })
 
-const firstName = ref<string>(state.value.firstName)
-watch(firstName, () => {
-  state.value.inputProfile(firstName.value, lastName.value)
+const verificationCode = ref<string>(state.value.verificationCode)
+watch(verificationCode, () => {
+  state.value.inputVerificationCode(verificationCode.value)
 })
 
-const lastName = ref<string>(state.value.lastName)
-watch(lastName, () => {
-  state.value.inputProfile(firstName.value, lastName.value)
-})
 
 </script>
 
