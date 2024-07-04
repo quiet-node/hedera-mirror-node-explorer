@@ -43,6 +43,33 @@ export class SignInWizardState extends WizardState {
     public password2 = ""
     public passwordError: unknown = null
 
+    public inputEmailAddress(newValue: string): void {
+        this.emailAddress = newValue
+        this.verificationToken = null
+        this.verificationError = null
+        this.inputVerificationCode("")
+    }
+
+    public inputVerificationCode(newValue: string): void {
+        this.verificationCode = newValue
+        this.confirmationResponse = null
+        this.confirmationError = null
+        this.inputProfile(this.firstName, this.lastName) // It resets this.userProfileError to null
+    }
+
+    public inputProfile(firstName: string, lastName: string): void {
+        this.firstName = firstName
+        this.lastName = lastName
+        this.userProfileError = null
+        this.inputPassword("", "")
+    }
+
+    public inputPassword(password1: string, password2: string) {
+        this.password1 = password1
+        this.password2 = password2
+        this.passwordError = null
+    }
+
     //
     // WizardState
     //

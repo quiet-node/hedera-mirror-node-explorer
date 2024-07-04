@@ -46,7 +46,7 @@ const state = defineModel('state', { type: Object as PropType<SignInWizardState>
 
 const emailAddress = ref<string>(state.value.emailAddress)
 watch(emailAddress, () => {
-  state.value.emailAddress = emailAddress.value
+  state.value.inputEmailAddress(emailAddress.value)
 })
 
 </script>

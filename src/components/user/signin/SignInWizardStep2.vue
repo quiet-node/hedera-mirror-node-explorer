@@ -46,7 +46,7 @@ const state = defineModel('state', { type: Object as PropType<SignInWizardState>
 
 const verificationCode = ref<string>(state.value.verificationCode)
 watch(verificationCode, () => {
-  state.value.verificationCode = verificationCode.value
+  state.value.inputVerificationCode(verificationCode.value)
 })
 
 

@@ -52,12 +52,12 @@ const state = defineModel('state', { type: Object as PropType<SignInWizardState>
 
 const password1 = ref<string>(state.value.password1)
 watch(password1, () => {
-  state.value.password1 = password1.value
+  state.value.inputPassword(password1.value, password2.value)
 })
 
 const password2 = ref<string>(state.value.password2)
 watch(password2, () => {
-  state.value.password2 = password2.value
+  state.value.inputPassword(password1.value, password2.value)
 })
 
 </script>
