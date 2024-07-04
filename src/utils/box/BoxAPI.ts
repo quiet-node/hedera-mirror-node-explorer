@@ -68,6 +68,11 @@ export class BoxAPI {
         const url = "/session/current"
         return (await this.privateAxios.get<UserSession>(url)).data
     }
+
+    public static async destroyUserSession(): Promise<void> {
+        const url = "/session/current"
+        await this.privateAxios.delete<UserSession>(url)
+    }
 }
 
 

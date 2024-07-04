@@ -20,6 +20,7 @@
 
 import {computed, ref} from "vue";
 import {BoxAPI, UserSession} from "@/utils/box/BoxAPI";
+import axios from "axios";
 
 export class BoxManager {
 
@@ -50,6 +51,20 @@ export class BoxManager {
         this.fetchCount.value += 1
     }
 
+    public async destroySession(): Promise<void> {
+        if (this.enabled) {
+            try {
+                await BoxAPI.destroyUserSession()
+            } catch(reason) {
+                if (!isUnauthorized(reason)) {
+                    console.log("Failed to destroy session: " + reason)
+                }
+            } finally {
+                this.session.value = null
+            }
+        }
+    }
+
     public status = computed<BoxStatus>(() => {
         let result: BoxStatus
         if (this.enabled) {
@@ -74,4 +89,8 @@ export enum BoxStatus {
     connected,
     disconnected,
     error
+}
+
+function isUnauthorized(reason: unknown): boolean {
+    return axios.isAxiosError(reason) && reason.response?.status == 401
 }

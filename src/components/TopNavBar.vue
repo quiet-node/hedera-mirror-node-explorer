@@ -92,8 +92,11 @@
                      class="button is-ghost h-is-navbar-item h-is-dense"
                      :class="{ 'is-rimmed': isStakingRoute}">Staking</router-link>
         <router-link :to="routeManager.makeRouteToBlocks()"
-                     class="button is-ghost is-last h-is-navbar-item h-is-dense"
+                     class="button is-ghost h-is-navbar-item h-is-dense"
                      :class="{ 'is-rimmed': isBlocksRoute}">Blocks</router-link>
+
+        <UserMenu/>
+
       </div>
 
       <div id="navbar-grid">
@@ -171,10 +174,11 @@ import WalletInfo from '@/components/wallet/WalletInfo.vue'
 import {DialogController} from "@/components/dialog/DialogController";
 import ConnectWalletDialog from "@/components/wallet/ConnectWalletDialog.vue";
 import {gtagWalletConnect, gtagWalletConnectionFailure} from "@/gtag";
+import UserMenu from "@/components/user/UserMenu.vue";
 
 export default defineComponent({
   name: "TopNavBar",
-  components: {ConnectWalletDialog, AxiosStatus, SearchBar, WalletChooser, WalletInfo},
+  components: {UserMenu, ConnectWalletDialog, AxiosStatus, SearchBar, WalletChooser, WalletInfo},
 
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
