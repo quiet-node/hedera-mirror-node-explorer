@@ -85,18 +85,20 @@
 
   </DashboardCard>
 
-  <ApproveAllowanceDialog v-model:show-dialog="showApproveAllowanceDialog"
-                          :owner-account-id="ownerAccountId"
-                          :current-hbar-allowance="currentHbarAllowance"
-                          :current-token-allowance="currentTokenAllowance"
-                          :token-decimals="tokenDecimals"
-                          @allowance-approved="onAllowanceApproved"
+  <ApproveAllowanceDialog
+      v-model:show-dialog="showApproveAllowanceDialog"
+      :owner-account-id="ownerAccountId"
+      :current-hbar-allowance="currentHbarAllowance"
+      :current-token-allowance="currentTokenAllowance"
+      :token-decimals="tokenDecimals"
+      @allowance-approved="onAllowanceApproved"
   />
 
-  <ProgressDialog v-model:show-dialog="notWithMetamaskDialogVisible"
-                  :mode="Mode.Error"
-                  main-message="This operation cannot be done using Metamask"
-                  extra-message="Use another wallet (Blade or Hashpack)"
+  <ProgressDialog
+      v-model:show-dialog="notWithMetamaskDialogVisible"
+      :mode="Mode.Error"
+      main-message="This operation cannot be done using Metamask"
+      extra-message="Use another wallet (Blade or Hashpack)"
   >
     <template v-slot:dialogTitle>
       <span class="h-is-primary-title">Unsupported Operation</span>
@@ -118,7 +120,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onMounted, ref} from 'vue';
 import router, {walletManager} from "@/router";
 import {HbarAllowanceTableController} from "@/components/allowances/HbarAllowanceTableController";
 import {TokenAllowanceTableController} from "@/components/allowances/TokenAllowanceTableController";
@@ -168,43 +170,16 @@ export default defineComponent({
 
     const showApproveAllowanceDialog = ref(false)
 
-    watch(showApproveAllowanceDialog, (newValue) => {
-      if (!newValue) {
-        cleanUpRouteQuery()
-      }
-    })
-
     const tabIds = ['hbar', 'token', 'nft']
     const tabLabels = ['HBAR', 'Tokens', 'NFTs']
     const selectedTab = ref(AppStorage.getAccountAllowanceTab() ?? tabIds[0])
     const onUpdate = (tab: string) => {
       selectedTab.value = tab
       AppStorage.setAccountAllowanceTab(tab)
-      switch (selectedTab.value) {
-        case 'hbar':
-          hbarAllowanceTableController.refresh()
-          break
-        case 'token':
-          tokenAllowanceTableController.refresh()
-          break
-        case 'nft':
-          if (selectApprovedForAll.value) {
-            nftAllSerialsAllowanceTableController.refresh()
-          } else {
-            nftAllowanceTableController.refresh()
-          }
-          break
-        default:
-          //should not happen
-      }
     }
 
     const selectApprovedForAll = ref(false)
     onMounted(() => selectApprovedForAll.value = AppStorage.getSelectApprovedForAll())
-    watch(selectApprovedForAll, (value) => {
-      AppStorage.setSelectApprovedForAll(value)
-      value ? nftAllSerialsAllowanceTableController.refresh() : nftAllowanceTableController.refresh()
-    })
 
     const perPage = computed(() => isMediumScreen ? 10 : 5)
 
@@ -218,33 +193,25 @@ export default defineComponent({
     // HBAR Allowances Table Controller
     //
     const hbarAllowanceTableController = new HbarAllowanceTableController(
-        router, computedAccountId, perPage, "ph", "kh")
-    onMounted(() => hbarAllowanceTableController.mount())
-    onBeforeUnmount(() => hbarAllowanceTableController.unmount())
+        router, computedAccountId, perPage, "ph", "kh"
+    )
 
     //
     // Token Allowances Table Controller
     //
     const tokenAllowanceTableController = new TokenAllowanceTableController(
-        router, computedAccountId, perPage, "pt", "kt")
-    onMounted(() => tokenAllowanceTableController.mount())
-    onBeforeUnmount(() => tokenAllowanceTableController.unmount())
+        router, computedAccountId, perPage, "pt", "kt"
+    )
 
     //
     // NFT Allowances Table Controllers
     //
     const nftAllowanceTableController = new NftAllowanceTableController(
-        router, computedAccountId, perPage, "pn", "kn")
+        router, computedAccountId, perPage, "pn", "kn"
+    )
     const nftAllSerialsAllowanceTableController = new NftAllSerialsAllowanceTableController(
-        router, computedAccountId, perPage, "pc", "kc")
-    onMounted(() => {
-      nftAllowanceTableController.mount()
-      nftAllSerialsAllowanceTableController.mount()
-    })
-    onBeforeUnmount(() => {
-      nftAllowanceTableController.unmount()
-      nftAllSerialsAllowanceTableController.unmount()
-    })
+        router, computedAccountId, perPage, "pc", "kc"
+    )
 
     const deleteDialogController = new DialogController()
 
@@ -317,19 +284,7 @@ export default defineComponent({
       nftAllowanceTableController.refresh()
       nftAllSerialsAllowanceTableController.refresh()
     }
-
-    const cleanUpRouteQuery = async () => {
-      const query = {...router.currentRoute.value.query}
-      if (query.app) {
-        delete query.app
-
-        const failure = await router.replace({query: query})
-        if (failure && failure.type != 8 && failure.type != 16) {
-          console.warn(failure.message)
-        }
-      }
-    }
-
+    
     const onChangeApprovedForAll = (event: Event) => {
       const checked = (event.target as HTMLInputElement).checked
       selectApprovedForAll.value = checked

@@ -85,7 +85,7 @@
 
 <script lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
+import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, PropType, Ref} from 'vue';
 import {Nft} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -120,6 +120,9 @@ export default defineComponent({
             && walletManager.accountId.value === props.controller.accountId.value
     )
 
+    onMounted(() => props.controller.mount())
+    onBeforeUnmount(() => props.controller.unmount())
+
     return {
       isTouchDevice,
       isSmallScreen,
@@ -144,6 +147,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-
-</style>
+<style/>

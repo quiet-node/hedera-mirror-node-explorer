@@ -81,7 +81,18 @@
 
 <script lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, PropType, ref, Ref, watch} from 'vue';
+import {
+  computed,
+  ComputedRef,
+  defineComponent,
+  inject,
+  onBeforeUnmount,
+  onMounted,
+  PropType,
+  ref,
+  Ref,
+  watch
+} from 'vue';
 import {NftAllowance} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -122,17 +133,19 @@ export default defineComponent({
             && walletManager.accountId.value === props.controller.accountId.value
     )
 
+    onMounted(() => props.controller.mount())
+    onBeforeUnmount(() => props.controller.unmount())
+
     const allowances = ref<DisplayedNftAllowance[]>([])
     watch(props.controller.rows, async () => {
       const result = []
       for (const a of props.controller.rows.value) {
         let allowance: DisplayedNftAllowance = a as DisplayedNftAllowance
-        // isValidAssociation(a.owner, a.token_id).then((r) => allowance.isEditable = r)
         allowance.isEditable = await isValidAssociation(a.owner, a.token_id)
         result.push(allowance)
       }
       allowances.value = result
-    })
+    }, {immediate: true})
 
     return {
       isTouchDevice,
@@ -158,6 +171,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-
-</style>
+<style/>

@@ -77,7 +77,7 @@
 
 <script lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
+import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, PropType, Ref} from 'vue';
 import {CryptoAllowance} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import {HbarAllowanceTableController} from "@/components/allowances/HbarAllowanceTableController";
@@ -107,8 +107,13 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const isWalletConnected = computed(
-        () => walletManager.connected.value && walletManager.accountId.value === props.controller.accountId.value)
-    // const isWalletConnected = computed(() => false)
+        () => walletManager.isHederaWallet.value
+            && walletManager.connected.value
+            && walletManager.accountId.value === props.controller.accountId.value
+    )
+
+    onMounted(() => props.controller.mount())
+    onBeforeUnmount(() => props.controller.unmount())
 
     return {
       isTouchDevice,
@@ -134,6 +139,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-
-</style>
+<style/>

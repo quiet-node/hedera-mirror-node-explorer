@@ -69,7 +69,8 @@
       <span v-if="props.row.isEditable" class="icon is-small has-text-right">
         <i class="fa fa-pen" @click="$emit('editAllowance', props.row)"></i>
       </span>
-      <InfoTooltip v-else label="The allowance cannot be modified because the token is no longer associated with this account."/>
+      <InfoTooltip v-else
+                   label="The allowance cannot be modified because the token is no longer associated with this account."/>
     </o-table-column>
 
   </o-table>
@@ -84,7 +85,18 @@
 
 <script lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, PropType, ref, Ref, watch} from 'vue';
+import {
+  computed,
+  ComputedRef,
+  defineComponent,
+  inject,
+  onBeforeUnmount,
+  onMounted,
+  PropType,
+  ref,
+  Ref,
+  watch
+} from 'vue';
 import {TokenAllowance} from "@/schemas/HederaSchemas";
 import {isValidAssociation} from "@/schemas/HederaUtils";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
@@ -125,19 +137,20 @@ export default defineComponent({
             && walletManager.connected.value
             && walletManager.accountId.value === props.controller.accountId.value
     )
-    // const isWalletConnected = computed(() => false)
+
+    onMounted(() => props.controller.mount())
+    onBeforeUnmount(() => props.controller.unmount())
 
     const allowances = ref<DisplayedTokenAllowance[]>([])
     watch(props.controller.rows, async () => {
       const result = []
       for (const a of props.controller.rows.value) {
         let allowance: DisplayedTokenAllowance = a as DisplayedTokenAllowance
-        // isValidAssociation(a.owner, a.token_id).then((r) => allowance.isEditable = r)
         allowance.isEditable = await isValidAssociation(a.owner, a.token_id)
         result.push(allowance)
       }
       allowances.value = result
-    })
+    }, {immediate: true})
 
     return {
       isTouchDevice,
@@ -163,6 +176,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-
-</style>
+<style/>
