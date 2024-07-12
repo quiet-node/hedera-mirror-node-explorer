@@ -60,17 +60,17 @@ export class TokenAllowanceTableController extends TableController<TokenAllowanc
                 "token.id": string | undefined
             }
             params.limit = limit
-            params.order = TableController.invertSortOrder(order)
+            params.order = order
             if (key !== null) {
                 const items = key.split('-')
                 const spender = items[0] ?? null
                 const token = items[1] ?? null
-                if (params.order === SortOrder.ASC) {
-                    params["spender.id"] = spender ? KeyOperator.gte + ":" + spender : undefined
-                    params["token.id"] = token ? KeyOperator.gt + ":" + token : undefined
-                } else {
+                if (operator === KeyOperator.lt) {
                     params["spender.id"] = spender ? KeyOperator.lte + ":" + spender : undefined
                     params["token.id"] = token ? KeyOperator.lt + ":" + token : undefined
+                } else { // KeyOperator.gte
+                    params["spender.id"] = spender ? KeyOperator.gte + ":" + spender : undefined
+                    params["token.id"] = token ? KeyOperator.gte + ":" + token : undefined
                 }
             }
             const cb = (r: AxiosResponse<TokenAllowancesResponse>): Promise<TokenAllowance[] | null> => {

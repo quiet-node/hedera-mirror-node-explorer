@@ -67,17 +67,17 @@ export class NftAllSerialsAllowanceTableController extends TableController<NftAl
                 "token.id": string | undefined
             }
             params.limit = limit
-            params.order = TableController.invertSortOrder(order)
+            params.order = order
             if (key !== null) {
                 const items = key.split('-')
                 const account = items[0] ?? null
                 const token = items[1] ?? null
-                if (params.order === SortOrder.ASC) {
-                    params["account.id"] = account ? KeyOperator.gte + ":" + account : undefined
-                    params["token.id"] = token ? KeyOperator.gt + ":" + token : undefined
-                } else {
+                if (operator === KeyOperator.lt) {
                     params["account.id"] = account ? KeyOperator.lte + ":" + account : undefined
                     params["token.id"] = token ? KeyOperator.lt + ":" + token : undefined
+                } else { // KeyOperator.gte
+                    params["account.id"] = account ? KeyOperator.gte + ":" + account : undefined
+                    params["token.id"] = token ? KeyOperator.gte + ":" + token : undefined
                 }
             }
             const cb = (r: AxiosResponse<NftAllowancesResponse>): Promise<NftAllowance[] | null> => {
