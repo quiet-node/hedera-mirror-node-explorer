@@ -45,7 +45,7 @@
 
       aria-previous-label="Previous page"
       backend-pagination
-      customRowKey="spender"
+      customRowKey="token+serial"
       default-sort="spender"
       @page-change="onPageChange">
 
