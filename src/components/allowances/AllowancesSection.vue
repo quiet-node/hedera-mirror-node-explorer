@@ -181,7 +181,7 @@ export default defineComponent({
     const selectApprovedForAll = ref(false)
     onMounted(() => selectApprovedForAll.value = AppStorage.getSelectApprovedForAll())
 
-    const perPage = computed(() => isMediumScreen ? 10 : 5)
+    const perPage = computed(() => isMediumScreen ? 4 : 4)
 
     const currentHbarAllowance = ref<CryptoAllowance | null>(null)
     const currentTokenAllowance = ref<TokenAllowance | null>(null)
