@@ -30,11 +30,11 @@
       :delay="delay"
       multiline="multiline"
       :position="position ?? 'auto'"
-      class="h-tooltip">
-    <span class="icon is-small h-is-property-text h-is-extra-text">
-      <i v-if="warningLabel" class="fa fa-exclamation-triangle has-text-danger"/>
-      <i v-else class="fas fa-info-circle"></i>
-    </span>
+      class="h-tooltip"
+      style="width: 16px; height: 16px"
+  >
+    <img v-if="warningLabel" alt="Warning" src="../assets/warning.svg">
+    <img v-else alt="Info" src="@/assets/info.svg">
   </o-tooltip>
 </template>
 
