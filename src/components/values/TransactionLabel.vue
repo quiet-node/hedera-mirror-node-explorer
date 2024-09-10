@@ -24,10 +24,13 @@
 
 <template>
   <span>
-    <span class="is-numeric">{{ transactionText }}</span>
-    <span v-if="errorFlagVisible" class="icon has-text-danger">
-      <i class="fas fa-exclamation-triangle"></i>
-    </span>
+    <span class="is-numeric mr-2">{{ transactionText }}</span>
+    <img
+        v-if="errorFlagVisible"
+        alt="Error flag"
+        src="../../assets/warning.svg"
+        style="height: 12px"
+    >
   </span>
 </template>
 
