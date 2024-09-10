@@ -28,8 +28,6 @@ describe("InfoTooltip.vue", () => {
 
     const sampleInfoLabel = 'Sample information label'
     const sampleWarningLabel = 'Sample warning label'
-    const infoIconClass = 'fa-info-circle'
-    const warningIconClass = 'fa-exclamation-triangle has-text-danger'
 
     test("InfoTooltip with information message", async () => {
 
@@ -49,8 +47,8 @@ describe("InfoTooltip.vue", () => {
 
         expect(wrapper.text()).toBe(sampleInfoLabel)
 
-        const icon = wrapper.get('i')
-        expect(icon.attributes('class')).toContain(infoIconClass)
+        const img = wrapper.get('img')
+        expect(img.attributes('alt')).toContain('Info')
 
         wrapper.unmount()
     })
@@ -73,8 +71,8 @@ describe("InfoTooltip.vue", () => {
 
         expect(wrapper.text()).toBe(sampleWarningLabel)
 
-        const icon = wrapper.get('i')
-        expect(icon.attributes('class')).toContain(warningIconClass)
+        const img = wrapper.get('img')
+        expect(img.attributes('alt')).toContain('Warning')
 
         wrapper.unmount()
     })
@@ -98,8 +96,8 @@ describe("InfoTooltip.vue", () => {
 
         expect(wrapper.text()).toBe(sampleWarningLabel)
 
-        const icon = wrapper.get('i')
-        expect(icon.attributes('class')).toContain(warningIconClass)
+        const img = wrapper.get('img')
+        expect(img.attributes('alt')).toContain('Warning')
 
         wrapper.unmount()
     })

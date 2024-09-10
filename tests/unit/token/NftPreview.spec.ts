@@ -81,7 +81,7 @@ describe("NftPreview.vue", () => {
         const tooltip = wrapper.find('#info-tooltip')
         expect(tooltip.exists()).toBe(true)
         expect(tooltip.text()).toBe(tooltipText)
-        expect(tooltip.get('i').attributes('class')).toContain('fa-info-circle')
+        expect(tooltip.get('img').attributes('alt')).toContain('Info')
 
         expect(wrapper.find('figure').exists()).toBe(false)
         expect(wrapper.find('video').exists()).toBe(false)
