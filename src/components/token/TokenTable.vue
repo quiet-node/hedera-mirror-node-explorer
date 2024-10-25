@@ -67,11 +67,21 @@
 
     <template v-slot:bottom-left>
       <TablePageSize
+          v-if="fullPage"
           v-model:size="perPage"
           :storage-key="AppStorage.TOKEN_TABLE_PAGE_SIZE_KEY"
       />
     </template>
   </o-table>
+
+  <TablePageSize
+      v-if="!controller.paginated.value
+      && controller.showPageSizeSelector.value
+      && fullPage"
+      v-model:size="controller.pageSize.value"
+      :storage-key="AppStorage.TOKEN_TABLE_PAGE_SIZE_KEY"
+      style="width: 102px; margin-left: 4px"
+  />
 
   <EmptyTable v-if="!tokens.length"/>
 
@@ -111,7 +121,11 @@ export default defineComponent({
     narrowed: {
       type: Boolean,
       default: false
-    }
+    },
+    fullPage: {
+      type: Boolean,
+      default: false
+    },
   },
 
   setup(props) {
