@@ -52,7 +52,8 @@
             :type="type"
             :url="imageUrl"
             :size="isSmallScreen ? 450 : 300"
-            :auto="true"
+            :auto="false"
+            :no-anchor="true"
         />
       </template>
       <template #mediaDescription>

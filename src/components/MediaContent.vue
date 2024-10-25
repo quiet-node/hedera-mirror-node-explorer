@@ -64,7 +64,7 @@
           class="media-content"
           :style="contentStyle"
           :autoplay="auto"
-          :controls="!auto"
+          :controls="showControls"
           loop
           @error="onLoadError"
           @loadeddata="onLoadSuccess"
@@ -172,8 +172,12 @@ export default defineComponent({
         () => !props.url || mediaError.value
     )
 
+    const showControls = computed(
+        () => !props.auto && props.size >= 200
+    )
+
     const onClick = () => {
-      if (props.url && !props.noAnchor) {
+      if (props.url && !props.noAnchor && !videoUrl.value) {
         window.location.assign(props.url)
       }
     }
@@ -211,6 +215,7 @@ export default defineComponent({
       mediaError,
       showSpinner,
       showPlaceHolder,
+      showControls,
       onLoadSuccess,
       onLoadError,
       onClick,
