@@ -107,16 +107,20 @@ export default defineComponent({
     // NFT and TOKEN TableController
     //
     const perPage = ref(isMediumScreen ? 15 : 10)
-    const nftTableController = new TokenTableController(useRouter(), perPage, ref(TokenType.NON_FUNGIBLE_UNIQUE), "p1", "k1")
-    const tokenTableController = new TokenTableController(useRouter(), perPage, ref(TokenType.FUNGIBLE_COMMON), "p2", "k2")
-    onMounted(() => {
-      nftTableController.mount()
-      tokenTableController.mount()
-    })
-    onBeforeUnmount(() => {
-      nftTableController.unmount()
-      tokenTableController.unmount()
-    })
+    const nftTableController = new TokenTableController(
+        useRouter(),
+        perPage,
+        ref(TokenType.NON_FUNGIBLE_UNIQUE),
+        ref(null),
+        "p1", "k1"
+    )
+    const tokenTableController = new TokenTableController(
+        useRouter(),
+        perPage,
+        ref(TokenType.FUNGIBLE_COMMON),
+        ref(null),
+        "p2", "k2"
+    )
 
     return {
       isSmallScreen,

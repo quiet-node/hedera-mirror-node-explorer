@@ -27,13 +27,14 @@ import {Router} from "vue-router";
 export class TokenTableController extends TableController<Token, string> {
 
     private readonly tokenType: Ref<string | null>
+    private readonly accountId: Ref<string | null>
 
     //
     // Public
     //
 
-    public constructor(router: Router, pageSize: Ref<number>, tokenType: Ref<string | null>,
-                       pageParamName: string, keyParamName: string) {
+    public constructor(router: Router, pageSize: Ref<number>, tokenType: Ref<string | null>, accountId: Ref<string | null>,
+                       pageParamName: string | null, keyParamName: string | null) {
         super(
             router,
             pageSize,
@@ -41,11 +42,12 @@ export class TokenTableController extends TableController<Token, string> {
             TableController.SLOW_REFRESH_PERIOD,
             TableController.SLOW_REFRESH_COUNT,
             100,
-            pageParamName,
-            keyParamName
+            pageParamName ?? undefined,
+            keyParamName ?? undefined
         );
         this.tokenType = tokenType
-        this.watchAndReload([this.tokenType, this.pageSize])
+        this.accountId = accountId
+        this.watchAndReload([this.tokenType, this.accountId, this.pageSize])
     }
 
     //
@@ -55,10 +57,14 @@ export class TokenTableController extends TableController<Token, string> {
     public async load(tokenId: string | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<Token[] | null> {
 
         const params = {} as {
+            "account.id": string | undefined
             limit: number
             "token.id": string | undefined
             order: string
             type: string | undefined
+        }
+        if (this.accountId.value != null) {
+            params["account.id"] = this.accountId.value
         }
         params.limit = limit
         if (tokenId !== null) {
