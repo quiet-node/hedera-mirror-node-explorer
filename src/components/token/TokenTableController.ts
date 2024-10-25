@@ -26,7 +26,7 @@ import {Router} from "vue-router";
 
 export class TokenTableController extends TableController<Token, string> {
 
-    private readonly tokenType: Ref<string | null>
+    public readonly tokenType: Ref<string | null>
     private readonly accountId: Ref<string | null>
 
     //

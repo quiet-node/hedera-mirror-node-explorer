@@ -53,7 +53,7 @@
       <TokenIOL :token-id="props.row.token_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="name" label="Collection Name">
+    <o-table-column v-slot="props" field="name" :label="isFungible ? 'Token Name' : 'Collection Name'">
       <div class="w400">
         {{ props.row.name }}
       </div>
@@ -93,9 +93,9 @@
 
 <script lang="ts">
 
-import {ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, PropType, Ref} from 'vue';
+import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, PropType, Ref} from 'vue';
 import {routeManager} from "@/router";
-import {Token} from "@/schemas/HederaSchemas";
+import {Token, TokenType} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {TokenTableController} from "@/components/token/TokenTableController";
@@ -132,6 +132,8 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
+    const isFungible = computed(() => props.controller.tokenType.value === TokenType.FUNGIBLE_COMMON)
+
     const handleClick = (t: Token, c: unknown, i: number, ci: number, event: MouseEvent) => {
       if (t.token_id) {
         routeManager.routeToToken(t.token_id, event)
@@ -148,6 +150,7 @@ export default defineComponent({
     return {
       isTouchDevice,
       isMediumScreen,
+      isFungible,
       tokens: props.controller.rows as ComputedRef<Token[]>,
       loading: props.controller.loading as ComputedRef<boolean>,
       total: props.controller.totalRowCount as ComputedRef<number>,
