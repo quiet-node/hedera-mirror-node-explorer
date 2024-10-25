@@ -93,7 +93,7 @@
 
 <script lang="ts">
 
-import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
+import {ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, PropType, Ref} from 'vue';
 import {routeManager} from "@/router";
 import {Token} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
@@ -137,6 +137,13 @@ export default defineComponent({
         routeManager.routeToToken(t.token_id, event)
       }
     }
+
+    onMounted(() => {
+      props.controller.mount()
+    })
+    onBeforeUnmount(() => {
+      props.controller.unmount()
+    })
 
     return {
       isTouchDevice,

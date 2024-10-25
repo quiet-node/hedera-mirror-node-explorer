@@ -74,7 +74,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {defineComponent, inject, ref} from 'vue';
 import TokenTable from "@/components/token/TokenTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
