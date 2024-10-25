@@ -76,12 +76,21 @@
     </template>
 
     <template v-slot:content>
-      <Tabs
-          :selected-tab="selectedTab"
-          :tab-ids="tabIds"
-          :tabLabels="tabLabels"
-          @update:selected-tab="onSelectTab($event)"
-      />
+      <div class="is-flex is-justify-content-space-between is-align-items-center">
+        <Tabs
+            :selected-tab="selectedTab"
+            :tab-ids="tabIds"
+            :tabLabels="tabLabels"
+            @update:selected-tab="onSelectTab"
+        />
+
+        <div v-if="selectedTab === 'nfts'" class="is-flex is-justify-content-end is-align-items-center">
+          <p class="has-text-weight-light">Show Collections</p>
+          <label class="checkbox pt-1 ml-3">
+            <input type="checkbox" v-model="showCollections">
+          </label>
+        </div>
+      </div>
 
       <div v-if="selectedTab === 'fungible'" id="fungibleTable">
         <FungibleTable
@@ -93,7 +102,13 @@
       </div>
 
       <div v-else-if="selectedTab === 'nfts'" id="nftsTable">
+        <TokenTable
+            v-if="showCollections"
+            :controller="collectionTableController"
+            :full-page="props.fullPage"
+        />
         <NftsTable
+            v-else
             :controller="nftsTableController"
             :check-enabled="rejectEnabled"
             v-model:checked-nfts="checkedTokens"
@@ -174,6 +189,8 @@ import PendingNftAirdropTable from "@/components/account/PendingNftAirdropTable.
 import ClaimTokenDialog from "@/components/account/ClaimTokenDialog.vue";
 import {tokenOrNftId} from "@/schemas/HederaUtils";
 import PendingFungibleAirdropTable from "@/components/account/PendingFungibleAirdropTable.vue";
+import {TokenTableController} from "@/components/token/TokenTableController";
+import TokenTable from "@/components/token/TokenTable.vue";
 
 const props = defineProps({
   accountId: {
@@ -205,6 +222,7 @@ const onSelectTab = (tab: string | null) => {
   checkedTokens.value.splice(0)
   checkedAirdrops.value.splice(0)
 }
+const showCollections = ref(false)
 
 const airdropTabIds = ['nfts', 'fungible']
 const airdropTabLabels = ['NFTs', 'Fungible']
@@ -215,19 +233,28 @@ const onAirdropSelectTab = (tab: string | null) => {
   checkedAirdrops.value.splice(0)
 }
 
+const collectionTableController = new TokenTableController(
+    useRouter(),
+    perPage,
+    ref(TokenType.NON_FUNGIBLE_UNIQUE),
+    accountId,
+    null,
+    null
+)
+
 const nftsTableController = new NftsTableController(
     useRouter(),
     accountId,
     perPage,
     "ps", "ks"
-);
+)
 
 const fungibleTableController = new FungibleTableController(
     useRouter(),
     accountId,
     perPage,
     "pf", "kf"
-);
+)
 
 const nftsAirdropTableController = new PendingAirdropTableController(
     useRouter(),
