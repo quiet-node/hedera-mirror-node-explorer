@@ -27,7 +27,7 @@
   <o-table
       :data="tokens"
       :loading="loading"
-      paginated
+      :paginated="controller.paginated.value && fullPage"
       backend-pagination
       pagination-order="left"
       :range-before="0"
