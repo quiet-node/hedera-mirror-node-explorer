@@ -171,7 +171,7 @@
 
 <script setup lang="ts">
 
-import {computed, PropType, ref} from 'vue';
+import {computed, PropType, ref, watch} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import Tabs from "@/components/Tabs.vue";
 import {AppStorage} from "@/AppStorage";
@@ -222,7 +222,8 @@ const onSelectTab = (tab: string | null) => {
   checkedTokens.value.splice(0)
   checkedAirdrops.value.splice(0)
 }
-const showCollections = ref(false)
+const showCollections = ref(AppStorage.getAccountShowCollections())
+watch(showCollections, (value) => AppStorage.setAccountShowCollections(value))
 
 const airdropTabIds = ['nfts', 'fungible']
 const airdropTabLabels = ['NFTs', 'Fungible']

@@ -220,6 +220,7 @@ export class AppStorage {
 
     private static readonly ACCOUNT_TOKEN_TAB_KEY = 'accountTokenTab'
     private static readonly ACCOUNT_AIRDROP_TAB_KEY = 'accountAirdropTab'
+    private static readonly ACCOUNT_SHOW_COLLECTIONS = 'accountShowCollections'
 
     static getAccountTokenTab() {
         return this.getLocalStorageItem(this.ACCOUNT_TOKEN_TAB_KEY)
@@ -235,6 +236,14 @@ export class AppStorage {
 
     static setAccountAirdropTab(newValue: string | null) {
         this.setLocalStorageItem(this.ACCOUNT_AIRDROP_TAB_KEY, newValue)
+    }
+
+    static getAccountShowCollections(): boolean {
+        return this.getLocalStorageItem(this.ACCOUNT_SHOW_COLLECTIONS) !== null
+    }
+
+    static setAccountShowCollections(newValue: boolean): void {
+        this.setLocalStorageItem(this.ACCOUNT_SHOW_COLLECTIONS, newValue ? 'true' : null)
     }
 
     //
