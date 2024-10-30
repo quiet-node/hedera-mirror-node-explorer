@@ -54,6 +54,7 @@ import AddressDetails from "@/pages/AddressDetails.vue";
 import RoutingSpec from "@/pages/RoutingSpec.vue";
 import {gtagPageView} from "@/gtag";
 import TokensByAccount from "@/pages/TokensByAccount.vue";
+import {CoreConfig} from "@/config/CoreConfig";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -261,68 +262,72 @@ export function makeRouter(): Router {
     })
 }
 
+export function setupRouter(coreConfig: CoreConfig): void {
+
+    router.beforeEach((to) => {
+        let result: boolean | string
+
+        if (getNetworkEntryFromRoute(to) === null // Unknown network
+            || (to.name === 'Staking' && !coreConfig.enableStaking) // Staking page not enabled
+        ) {
+            result = "/page-not-found"
+        } else {
+            result = true
+        }
+        return result
+    })
+
+    router.beforeEach((to) => {
+        const envTitleSuffix = coreConfig.documentTitleSuffix
+        const titleSuffix = envTitleSuffix !== null ? " | " + envTitleSuffix : ""
+
+        switch (to.name as string) {
+            case "MainDashboard":
+                document.title = "Hedera Dashboard" + titleSuffix
+                break;
+            case "TransactionDetails":
+                document.title = "Hedera Transaction " + (to.query.tid ?? to.params.transactionLoc) + titleSuffix
+                break;
+            case "TransactionDetails3091":
+                document.title = "Hedera Transaction " + to.params.transactionLoc + titleSuffix
+                break;
+            case "TokenDetails":
+                document.title = "Hedera Token " + to.params.tokenId + titleSuffix
+                break;
+            case "TopicDetails":
+                document.title = "Hedera Topic " + to.params.topicId + titleSuffix
+                break;
+            case "ContractDetails":
+                document.title = "Hedera Contract " + to.params.contractId + titleSuffix
+                break;
+            case "AccountDetails":
+                document.title = "Hedera Account " + to.params.accountId + titleSuffix
+                break;
+            case "AdminKeyDetails":
+                document.title = "Hedera Admin Key for Account " + to.params.accountId + titleSuffix
+                break;
+            case "NodeDetails":
+                document.title = "Hedera Node " + to.params.nodeId + titleSuffix
+                break;
+            case "BlockDetails":
+                document.title = "Hedera Block " + to.params.blockHon + titleSuffix
+                break;
+            case "SearchHelp":
+                document.title = "Search Results" + titleSuffix
+                break;
+            case "PageNotFound":
+                document.title = "Page Not Found" + titleSuffix
+                break;
+            default:
+                document.title = "Hedera " + (to.name as string) + titleSuffix
+        }
+
+        addMetaTags(coreConfig)
+    });
+}
+
 const router = makeRouter()
 
-router.beforeEach((to) => {
-    let result: boolean | string
-
-    if (getNetworkEntryFromRoute(to) === null // Unknown network
-        || (to.name === 'Staking' && import.meta.env.VITE_APP_ENABLE_STAKING !== 'true') // Staking page not enabled
-    ) {
-        result = "/page-not-found"
-    } else {
-        result = true
-    }
-    return result
-})
-
-router.beforeEach((to) => {
-    const envTitleSuffix = import.meta.env.VITE_APP_DOCUMENT_TITLE_SUFFIX
-    const titleSuffix = envTitleSuffix ? " | " + envTitleSuffix : ""
-
-    switch (to.name as string) {
-        case "MainDashboard":
-            document.title = "Hedera Dashboard" + titleSuffix
-            break;
-        case "TransactionDetails":
-            document.title = "Hedera Transaction " + (to.query.tid ?? to.params.transactionLoc) + titleSuffix
-            break;
-        case "TransactionDetails3091":
-            document.title = "Hedera Transaction " + to.params.transactionLoc + titleSuffix
-            break;
-        case "TokenDetails":
-            document.title = "Hedera Token " + to.params.tokenId + titleSuffix
-            break;
-        case "TopicDetails":
-            document.title = "Hedera Topic " + to.params.topicId + titleSuffix
-            break;
-        case "ContractDetails":
-            document.title = "Hedera Contract " + to.params.contractId + titleSuffix
-            break;
-        case "AccountDetails":
-            document.title = "Hedera Account " + to.params.accountId + titleSuffix
-            break;
-        case "AdminKeyDetails":
-            document.title = "Hedera Admin Key for Account " + to.params.accountId + titleSuffix
-            break;
-        case "NodeDetails":
-            document.title = "Hedera Node " + to.params.nodeId + titleSuffix
-            break;
-        case "BlockDetails":
-            document.title = "Hedera Block " + to.params.blockHon + titleSuffix
-            break;
-        case "SearchHelp":
-            document.title = "Search Results" + titleSuffix
-            break;
-        case "PageNotFound":
-            document.title = "Page Not Found" + titleSuffix
-            break;
-        default:
-            document.title = "Hedera " + (to.name as string) + titleSuffix
-    }
-
-    addMetaTags()
-});
 
 router.beforeEach(() => {
     AxiosMonitor.instance.clearErrorResponses()
@@ -336,12 +341,11 @@ router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized) =>
 
 export default router
 
-export function addMetaTags(): void {
+function addMetaTags(coreConfig: CoreConfig): void {
 
     const title = document.title
-    const description =
-        import.meta.env.VITE_APP_META_DESCRIPTION ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
-    const url = import.meta.env.VITE_APP_META_URL
+    const description = coreConfig.metaDescription ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
+    const url = coreConfig.metaURL
 
     createOrUpdateTagName('description', description)
     createOrUpdateTagProperty('og:title', title)
@@ -350,7 +354,7 @@ export function addMetaTags(): void {
     }
 }
 
-export function createOrUpdateTagName(name: string, content: string): void {
+function createOrUpdateTagName(name: string, content: string): void {
     const header = document.getElementsByTagName('head')[0]
     for (const tag of document.getElementsByTagName('meta')) {
         if (tag.getAttribute('name') === name) {
@@ -363,7 +367,7 @@ export function createOrUpdateTagName(name: string, content: string): void {
     header.appendChild(newTag)
 }
 
-export function createOrUpdateTagProperty(property: string, content: string): void {
+function createOrUpdateTagProperty(property: string, content: string): void {
     const header = document.getElementsByTagName('head')[0]
     for (const tag of document.getElementsByTagName('meta')) {
         if (tag.getAttribute('property') === property) {
@@ -376,7 +380,7 @@ export function createOrUpdateTagProperty(property: string, content: string): vo
     header.appendChild(newTag)
 }
 
-export function getNetworkEntryFromRoute(r: RouteLocationNormalized): NetworkEntry | null {
+function getNetworkEntryFromRoute(r: RouteLocationNormalized): NetworkEntry | null {
 
     let networkName: string | null
     const networkParam = r.params.network
@@ -388,10 +392,10 @@ export function getNetworkEntryFromRoute(r: RouteLocationNormalized): NetworkEnt
 
     return networkName !== null ? networkRegistry.lookup(networkName) : null
 }
-
-export function getNetworkEntryFromCurrentRoute(): NetworkEntry {
-    return getNetworkEntryFromRoute(router.currentRoute.value) ?? networkRegistry.getDefaultEntry()
-}
+//
+// export function getNetworkEntryFromCurrentRoute(): NetworkEntry {
+//     return getNetworkEntryFromRoute(router.currentRoute.value) ?? networkRegistry.getDefaultEntry()
+// }
 
 export const routeManager = new RouteManager(router)
 export const walletManager = new WalletManager(routeManager)
