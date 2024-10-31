@@ -87,7 +87,10 @@ export class CoreConfig {
         public readonly googleTagID: string|null,
 
         // The URL prefix of the IPFS gateway
-        public readonly ipfsGatewayUrlPrefix: string
+        public readonly ipfsGatewayUrlPrefix: string,
+
+        // The URL of the popular token index
+        public readonly popularTokenIndexURL: string|null
 
     ) {}
 
@@ -104,7 +107,8 @@ export class CoreConfig {
             fetchString(obj, "estimatorNotice"),
             fetchString(obj, "walletChooserDisclaimerPopup"),
             fetchString(obj, "googleTagID"),
-            fetchString(obj, "ipfsGatewayUrlPrefix") ?? "https://gateway.pinata.cloud/ipfs/"
+            fetchURL(obj, "ipfsGatewayUrlPrefix") ?? "https://gateway.pinata.cloud/ipfs/",
+            fetchURL(obj, "popularTokenIndexURL")
         )
     }
 }
