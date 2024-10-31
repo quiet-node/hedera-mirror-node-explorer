@@ -61,9 +61,7 @@ export function fetchString(obj: any, key: string): string|null {
 }
 
 export function fetchURL(obj: any, key: string): string|null {
-    const result = fetchString(obj, key)
-    if (result !== null && URL.parse(result) === null) {
-        throw new TypeError('Expected ' + key + ' to be URL')
-    }
-    return result
+    const str = fetchString(obj, key)
+    const url = str !== null ? URL.parse(str, window.location.origin) : null
+    return url?.toString() ?? null
 }

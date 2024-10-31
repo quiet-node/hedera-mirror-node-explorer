@@ -44,8 +44,7 @@ export class SelectedTokensCache extends SingletonCache<SelectedTokensIndex> {
     protected async load(): Promise<SelectedTokensIndex> {
         let selectedTokenEntries: SelectedTokenEntry[]
         if (routeManager.currentNetwork.value == "mainnet" && this.popularTokenIndexURL !== null) {
-            const url = window.location.origin + "/" + this.popularTokenIndexURL
-            selectedTokenEntries= (await axios.get<SelectedTokenEntry[]>(url)).data
+            selectedTokenEntries= (await axios.get<SelectedTokenEntry[]>(this.popularTokenIndexURL)).data
         } else {
             selectedTokenEntries = []
         }

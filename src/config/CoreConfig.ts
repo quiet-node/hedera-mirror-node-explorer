@@ -103,7 +103,7 @@ export class CoreConfig {
             fetchString(obj, "metaDescription"),
             fetchURL(obj, "metaURL"),
             fetchURL(obj, "sponsorURL"),
-            fetchString(obj, "termsOfUseURL"),
+            fetchURL(obj, "termsOfUseURL"),
             fetchString(obj, "estimatorNotice"),
             fetchString(obj, "walletChooserDisclaimerPopup"),
             fetchString(obj, "googleTagID"),
