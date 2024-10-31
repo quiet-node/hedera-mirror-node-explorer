@@ -264,12 +264,14 @@ export function makeRouter(): Router {
 
 export function setupRouter(coreConfig: CoreConfig): void {
 
+    if (!coreConfig.enableStaking) {
+        router.removeRoute("Staking")
+    }
+
     router.beforeEach((to) => {
         let result: boolean | string
 
-        if (getNetworkEntryFromRoute(to) === null // Unknown network
-            || (to.name === 'Staking' && !coreConfig.enableStaking) // Staking page not enabled
-        ) {
+        if (getNetworkEntryFromRoute(to) === null) { // Unknown network)
             result = "/page-not-found"
         } else {
             result = true
