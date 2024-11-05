@@ -53,6 +53,10 @@ export class RouteManager {
         return this.currentNetworkEntry.value.name
     })
 
+    public readonly walletSupported = computed(() => {
+        return this.currentNetworkEntry.value.walletSupported
+    })
+
     public readonly currentNetworkEntry = computed(() => {
 
         let networkName: string | null
