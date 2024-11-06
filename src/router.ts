@@ -346,7 +346,7 @@ export default router
 function addMetaTags(coreConfig: CoreConfig): void {
 
     const title = document.title
-    const description = coreConfig.metaDescription ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
+    const description = coreConfig.productDescription ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
     const url = coreConfig.metaURL
 
     createOrUpdateTagName('description', description)
