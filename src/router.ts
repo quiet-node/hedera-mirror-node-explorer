@@ -264,9 +264,10 @@ export function makeRouter(): Router {
 
 export function setupRouter(coreConfig: CoreConfig): void {
 
-    if (!coreConfig.enableStaking) {
-        router.removeRoute("Staking")
-    }
+    // TODO: enableStaking is now part of network config
+    // if (!coreConfig.enableStaking) {
+    //     router.removeRoute("Staking")
+    // }
 
     router.beforeEach((to) => {
         let result: boolean | string

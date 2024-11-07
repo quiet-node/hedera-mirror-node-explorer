@@ -57,6 +57,10 @@ export class RouteManager {
         return this.currentNetworkEntry.value.enableWallet
     })
 
+    public readonly enableStaking = computed(() => {
+        return this.currentNetworkEntry.value.enableStaking
+    })
+
     public readonly nbNetworks = computed(() => {
         return networkRegistry.entries.value.length
     })

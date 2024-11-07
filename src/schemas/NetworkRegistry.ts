@@ -42,14 +42,24 @@ export class NetworkEntry {
     public readonly url: string
     public readonly ledgerID: string
     public readonly enableWallet: boolean
+    public readonly enableStaking: boolean
     public readonly sourcifySetup: SourcifySetup | null
 
-    constructor(name: string, displayName: string, url: string, ledgerID: string, enableWallet: boolean, sourcifySetup: SourcifySetup | null) {
+    constructor(
+        name: string,
+        displayName: string,
+        url: string,
+        ledgerID: string,
+        enableWallet: boolean,
+        enableStaking: boolean,
+        sourcifySetup: SourcifySetup | null
+    ) {
         this.name = name
         this.displayName = displayName ?? name.toUpperCase()
         this.url = url
         this.ledgerID = ledgerID
         this.enableWallet = enableWallet
+        this.enableStaking = enableStaking
         this.sourcifySetup = sourcifySetup
     }
 
@@ -61,6 +71,7 @@ export class NetworkEntry {
         const url = encoding["url"]
         const ledgerID = encoding["ledgerID"]
         const enableWallet = encoding["enableWallet"]
+        const enableStaking = encoding["enableStaking"]
         const sourcifySetupEncoding = encoding["sourcifySetup"]
 
         if (typeof name == "string" &&
@@ -68,6 +79,7 @@ export class NetworkEntry {
             typeof url == "string" &&
             typeof ledgerID == "string" &&
             typeof enableWallet == "boolean" &&
+            typeof enableStaking == "boolean" &&
             (typeof sourcifySetupEncoding == "object" || typeof sourcifySetupEncoding == "undefined")) {
 
             let tidyDisplayName = (displayName ?? name).toUpperCase()
@@ -78,12 +90,12 @@ export class NetworkEntry {
             if (sourcifySetupEncoding !== undefined && sourcifySetupEncoding !== null) {
                 const sourcifySetup = SourcifySetup.decode(sourcifySetupEncoding as Record<string, unknown>)
                 if (sourcifySetup !== null) {
-                    result = new NetworkEntry(name, tidyDisplayName, url, ledgerID, enableWallet, sourcifySetup)
+                    result = new NetworkEntry(name, tidyDisplayName, url, ledgerID, enableWallet, enableStaking, sourcifySetup)
                 } else {
                     result = null
                 }
             } else {
-                result = new NetworkEntry(name, tidyDisplayName, url, ledgerID, enableWallet, null)
+                result = new NetworkEntry(name, tidyDisplayName, url, ledgerID, enableWallet, enableStaking, null)
             }
         } else {
             result = null
@@ -174,6 +186,7 @@ export class NetworkRegistry {
             url: "https://mainnet-public.mirrornode.hedera.com/",
             ledgerID: '00',
             enableWallet: true,
+            enableStaking: true,
             sourcifySetup: new SourcifySetup(true, "", "", "", 0x127)
         },
         {
@@ -182,6 +195,7 @@ export class NetworkRegistry {
             url: "https://testnet.mirrornode.hedera.com/",
             ledgerID: '01',
             enableWallet: true,
+            enableStaking: true,
             sourcifySetup: new SourcifySetup(true, "", "", "", 0x128)
         },
         {
@@ -190,6 +204,7 @@ export class NetworkRegistry {
             url: "https://previewnet.mirrornode.hedera.com/",
             ledgerID: '02',
             enableWallet: false,
+            enableStaking: true,
             sourcifySetup: new SourcifySetup(true, "", "", "", 0x129)
         }
     ])
@@ -221,7 +236,7 @@ export class NetworkRegistry {
                         `Defining an additional network with URL: ${localNodeURL} and name: ${localNodeMenuName} \n`)
 
                     this.entries.value.push(
-                        new NetworkEntry('devnet', localNodeMenuName, localNodeURL, 'FF', false, null)
+                        new NetworkEntry('devnet', localNodeMenuName, localNodeURL, 'FF', false, true, null)
                     )
                 }
             })
