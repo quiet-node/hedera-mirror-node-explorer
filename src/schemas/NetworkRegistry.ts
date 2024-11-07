@@ -41,15 +41,15 @@ export class NetworkEntry {
     public readonly displayName: string
     public readonly url: string
     public readonly ledgerID: string
-    public readonly walletSupported: boolean
+    public readonly enableWallet: boolean
     public readonly sourcifySetup: SourcifySetup | null
 
-    constructor(name: string, displayName: string, url: string, ledgerID: string, walletSupported: boolean, sourcifySetup: SourcifySetup | null) {
+    constructor(name: string, displayName: string, url: string, ledgerID: string, enableWallet: boolean, sourcifySetup: SourcifySetup | null) {
         this.name = name
         this.displayName = displayName ?? name.toUpperCase()
         this.url = url
         this.ledgerID = ledgerID
-        this.walletSupported = walletSupported
+        this.enableWallet = enableWallet
         this.sourcifySetup = sourcifySetup
     }
 
@@ -60,14 +60,14 @@ export class NetworkEntry {
         const displayName = encoding["displayName"]
         const url = encoding["url"]
         const ledgerID = encoding["ledgerID"]
-        const walletSupported = encoding["walletSupported"]
+        const enableWallet = encoding["enableWallet"]
         const sourcifySetupEncoding = encoding["sourcifySetup"]
 
         if (typeof name == "string" &&
             (typeof displayName == "string" || typeof displayName == "undefined") &&
             typeof url == "string" &&
             typeof ledgerID == "string" &&
-            typeof walletSupported == "boolean" &&
+            typeof enableWallet == "boolean" &&
             (typeof sourcifySetupEncoding == "object" || typeof sourcifySetupEncoding == "undefined")) {
 
             let tidyDisplayName = (displayName ?? name).toUpperCase()
@@ -78,12 +78,12 @@ export class NetworkEntry {
             if (sourcifySetupEncoding !== undefined && sourcifySetupEncoding !== null) {
                 const sourcifySetup = SourcifySetup.decode(sourcifySetupEncoding as Record<string, unknown>)
                 if (sourcifySetup !== null) {
-                    result = new NetworkEntry(name, tidyDisplayName, url, ledgerID, walletSupported, sourcifySetup)
+                    result = new NetworkEntry(name, tidyDisplayName, url, ledgerID, enableWallet, sourcifySetup)
                 } else {
                     result = null
                 }
             } else {
-                result = new NetworkEntry(name, tidyDisplayName, url, ledgerID, walletSupported, null)
+                result = new NetworkEntry(name, tidyDisplayName, url, ledgerID, enableWallet, null)
             }
         } else {
             result = null
@@ -173,7 +173,7 @@ export class NetworkRegistry {
             displayName: 'MAINNET',
             url: "https://mainnet-public.mirrornode.hedera.com/",
             ledgerID: '00',
-            walletSupported: true,
+            enableWallet: true,
             sourcifySetup: new SourcifySetup(true, "", "", "", 0x127)
         },
         {
@@ -181,7 +181,7 @@ export class NetworkRegistry {
             displayName: 'TESTNET',
             url: "https://testnet.mirrornode.hedera.com/",
             ledgerID: '01',
-            walletSupported: true,
+            enableWallet: true,
             sourcifySetup: new SourcifySetup(true, "", "", "", 0x128)
         },
         {
@@ -189,7 +189,7 @@ export class NetworkRegistry {
             displayName: 'PREVIEWNET',
             url: "https://previewnet.mirrornode.hedera.com/",
             ledgerID: '02',
-            walletSupported: false,
+            enableWallet: false,
             sourcifySetup: new SourcifySetup(true, "", "", "", 0x129)
         }
     ])

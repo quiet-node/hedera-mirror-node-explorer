@@ -53,8 +53,8 @@ export class RouteManager {
         return this.currentNetworkEntry.value.name
     })
 
-    public readonly walletSupported = computed(() => {
-        return this.currentNetworkEntry.value.walletSupported
+    public readonly enableWallet = computed(() => {
+        return this.currentNetworkEntry.value.enableWallet
     })
 
     public readonly nbNetworks = computed(() => {
