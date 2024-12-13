@@ -23,22 +23,27 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <section class="section is-top-section" :class="{'is-medium-screen': isMediumScreen}">
-    <PageHeader/>
-  </section>
-
-  <slot name="pageBanner">
-    <hr class="h-has-background-color" style="margin: 0; height: 4px"/>
-  </slot>
-
-  <slot v-if="props.rawContent" name="pageContent"/>
-  <section v-else :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
-    <slot name="pageContent"/>
-  </section>
-
-  <Footer :keep-background="props.keepFooterBackground"/>
-
+  <div class="is-flex mb-3 is-align-items-baseline is-justify-content-space-between">
+    <NavMenuItem :tabId="TabId.Dashboard" :is-first="true"
+                 :target-route="routeManager.makeRouteToMainDashboard()"/>
+    <NavMenuItem :tabId="TabId.Transactions"
+                 :target-route="routeManager.makeRouteToTransactions()"/>
+    <NavMenuItem :tabId="TabId.Tokens"
+                 :target-route="routeManager.makeRouteToTokens()"/>
+    <NavMenuItem :tabId="TabId.Topics"
+                 :target-route="routeManager.makeRouteToTopics()"/>
+    <NavMenuItem :tabId="TabId.Contracts"
+                 :target-route="routeManager.makeRouteToContracts()"/>
+    <NavMenuItem :tabId="TabId.Accounts"
+                 :target-route="routeManager.makeRouteToAccounts()"/>
+    <NavMenuItem :tabId="TabId.Nodes"
+                 :target-route="routeManager.makeRouteToNodes()"/>
+    <NavMenuItem v-if="enableStaking"
+                 :tabId="TabId.Staking"
+                 :target-route="routeManager.makeRouteToStaking()"/>
+    <NavMenuItem :tabId="TabId.Blocks"
+                 :target-route="routeManager.makeRouteToBlocks()"/>
+  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -47,25 +52,11 @@
 
 <script setup lang="ts">
 
-import {inject} from "vue";
-import Footer from "@/components/page/Footer.vue";
-import TopNavBar from "@/components/page/TopNavBar.vue";
-import PageHeader from "@/components/page/header/PageHeader.vue";
+import {TabId} from "@/utils/RouteManager.ts";
+import {routeManager} from "@/router.ts";
+import NavMenuItem from "@/components/page/NavMenuItem.vue";
 
-const props = defineProps({
-  keepFooterBackground: {
-    type: Boolean,
-    default: false
-  },
-  rawContent: {
-    type: Boolean,
-    default: false
-  }
-})
-
-const isSmallScreen = inject('isSmallScreen', true)
-const isMediumScreen = inject('isMediumScreen', true)
-const isTouchDevice = inject('isTouchDevice', false)
+const enableStaking = routeManager.enableStaking
 
 </script>
 
@@ -74,18 +65,5 @@ const isTouchDevice = inject('isTouchDevice', false)
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-section.section.is-top-section {
-  padding-top: 0;
-  padding-bottom: 0;
-  background-image: url("assets/block-chain-bg.png");
-  background-repeat: no-repeat;
-  background-size: 104px
-}
-
-section.section.is-top-section.is-medium-screen {
-  padding-bottom: 30px;
-  background-size: 112px
-}
 
 </style>

@@ -23,22 +23,13 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <section class="section is-top-section" :class="{'is-medium-screen': isMediumScreen}">
-    <PageHeader/>
-  </section>
-
-  <slot name="pageBanner">
-    <hr class="h-has-background-color" style="margin: 0; height: 4px"/>
-  </slot>
-
-  <slot v-if="props.rawContent" name="pageContent"/>
-  <section v-else :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
-    <slot name="pageContent"/>
-  </section>
-
-  <Footer :keep-background="props.keepFooterBackground"/>
-
+  <o-field>
+    <o-select v-model="selectedNetwork" class="h-is-navbar-item">
+      <option v-for="network in networkEntries" :key="network.name" :value="network.name">
+        {{ network.displayName }}
+      </option>
+    </o-select>
+  </o-field>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -47,25 +38,21 @@
 
 <script setup lang="ts">
 
-import {inject} from "vue";
-import Footer from "@/components/page/Footer.vue";
-import TopNavBar from "@/components/page/TopNavBar.vue";
-import PageHeader from "@/components/page/header/PageHeader.vue";
 
-const props = defineProps({
-  keepFooterBackground: {
-    type: Boolean,
-    default: false
-  },
-  rawContent: {
-    type: Boolean,
-    default: false
+import {ref, watch} from "vue";
+import {routeManager} from "@/router.ts";
+import {NetworkConfig} from "@/config/NetworkConfig.ts";
+
+const networkEntries = NetworkConfig.inject().entries
+const selectedNetwork = ref(routeManager.currentNetwork.value)
+watch(routeManager.currentNetwork, (newNetwork) => {
+  selectedNetwork.value = newNetwork // Checked : does not trigger any watch when value is unchanged
+})
+watch(selectedNetwork, (newNetwork) => {
+  if (newNetwork !== routeManager.currentNetwork.value) {
+    routeManager.routeToMainDashboard(newNetwork)
   }
 })
-
-const isSmallScreen = inject('isSmallScreen', true)
-const isMediumScreen = inject('isMediumScreen', true)
-const isTouchDevice = inject('isTouchDevice', false)
 
 </script>
 
@@ -74,18 +61,5 @@ const isTouchDevice = inject('isTouchDevice', false)
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-section.section.is-top-section {
-  padding-top: 0;
-  padding-bottom: 0;
-  background-image: url("assets/block-chain-bg.png");
-  background-repeat: no-repeat;
-  background-size: 104px
-}
-
-section.section.is-top-section.is-medium-screen {
-  padding-bottom: 30px;
-  background-size: 112px
-}
 
 </style>

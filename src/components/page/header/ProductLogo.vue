@@ -23,22 +23,10 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <section class="section is-top-section" :class="{'is-medium-screen': isMediumScreen}">
-    <PageHeader/>
-  </section>
-
-  <slot name="pageBanner">
-    <hr class="h-has-background-color" style="margin: 0; height: 4px"/>
-  </slot>
-
-  <slot v-if="props.rawContent" name="pageContent"/>
-  <section v-else :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
-    <slot name="pageContent"/>
-  </section>
-
-  <Footer :keep-background="props.keepFooterBackground"/>
-
+  <router-link :to="routeManager.makeRouteToMainDashboard()">
+    <img v-if="productLogoURL" id="product-logo" alt="Product Logo" class="image" :src="productLogoURL">
+    <img v-else id="product-logo" alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png">
+  </router-link>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -47,25 +35,11 @@
 
 <script setup lang="ts">
 
-import {inject} from "vue";
-import Footer from "@/components/page/Footer.vue";
-import TopNavBar from "@/components/page/TopNavBar.vue";
-import PageHeader from "@/components/page/header/PageHeader.vue";
+import {routeManager} from "@/router.ts";
+import {CoreConfig} from "@/config/CoreConfig.ts";
 
-const props = defineProps({
-  keepFooterBackground: {
-    type: Boolean,
-    default: false
-  },
-  rawContent: {
-    type: Boolean,
-    default: false
-  }
-})
-
-const isSmallScreen = inject('isSmallScreen', true)
-const isMediumScreen = inject('isMediumScreen', true)
-const isTouchDevice = inject('isTouchDevice', false)
+const coreConfig = CoreConfig.inject()
+const productLogoURL = coreConfig.productLogoURL
 
 </script>
 
@@ -75,17 +49,16 @@ const isTouchDevice = inject('isTouchDevice', false)
 
 <style scoped>
 
-section.section.is-top-section {
-  padding-top: 0;
-  padding-bottom: 0;
-  background-image: url("assets/block-chain-bg.png");
-  background-repeat: no-repeat;
-  background-size: 104px
+#product-logo {
+  max-width: 242px;
+  max-height: 72px;
+  width: 100%
 }
 
-section.section.is-top-section.is-medium-screen {
-  padding-bottom: 30px;
-  background-size: 112px
+@media (max-width: 1449px) {
+  #product-logo {
+    max-width: 220px;
+  }
 }
 
 </style>
