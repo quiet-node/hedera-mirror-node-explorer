@@ -25,7 +25,7 @@
 <template>
 
   <section class="section is-top-section" :class="{'is-medium-screen': isMediumScreen}">
-    <PageHeader/>
+    <PageHeaderV2/>
   </section>
 
   <slot name="pageBanner">
@@ -51,6 +51,7 @@ import {inject} from "vue";
 import Footer from "@/components/page/Footer.vue";
 import TopNavBar from "@/components/page/TopNavBar.vue";
 import PageHeader from "@/components/page/header/PageHeader.vue";
+import PageHeaderV2 from "@/components/page/header/PageHeaderV2.vue";
 
 const props = defineProps({
   keepFooterBackground: {

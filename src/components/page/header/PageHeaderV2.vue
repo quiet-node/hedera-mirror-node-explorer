@@ -23,13 +23,23 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <o-field>
-    <o-select v-model="selectedNetwork" class="h-is-navbar-item" style="height: 40px; min-width: 100px">
-      <option v-for="network in networkEntries" :key="network.name" :value="network.name">
-        {{ network.displayName }}
-      </option>
-    </o-select>
-  </o-field>
+  <HeaderLayout>
+    <template #productLogo>
+      <ProductLogo/>
+    </template>
+    <template #tabBar>
+      <TabBar/>
+    </template>
+    <template #searchBar>
+      <SearchBarV2/>
+    </template>
+    <template #networkSelector>
+      <NetworkSelector/>
+    </template>
+    <template #connectButton>
+      <ConnectWalletButton/>
+    </template>
+  </HeaderLayout>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -38,21 +48,13 @@
 
 <script setup lang="ts">
 
+import HeaderLayout from "@/components/page/header/HeaderLayout.vue";
+import ConnectWalletButton from "@/components/wallet/ConnectWalletButton.vue";
+import NetworkSelector from "@/components/page/header/NetworkSelector.vue";
+import SearchBarV2 from "@/components/search/SearchBarV2.vue";
+import ProductLogo from "@/components/page/header/ProductLogo.vue";
+import TabBar from "@/components/page/header/TabBar.vue";
 
-import {ref, watch} from "vue";
-import {routeManager} from "@/router.ts";
-import {NetworkConfig} from "@/config/NetworkConfig.ts";
-
-const networkEntries = NetworkConfig.inject().entries
-const selectedNetwork = ref(routeManager.currentNetwork.value)
-watch(routeManager.currentNetwork, (newNetwork) => {
-  selectedNetwork.value = newNetwork // Checked : does not trigger any watch when value is unchanged
-})
-watch(selectedNetwork, (newNetwork) => {
-  if (newNetwork !== routeManager.currentNetwork.value) {
-    routeManager.routeToMainDashboard(newNetwork)
-  }
-})
 
 </script>
 
