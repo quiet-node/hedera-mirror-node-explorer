@@ -2,7 +2,6 @@
 
 # Install default logos and theme
 cp ./src/assets/brand*.png ./src/assets/branding/
-cp ./src/assets/styles/brand-theme.css ./src/assets/branding/
 
 # Install possible assets customization
 BRANDING_DIR="${BRANDING_LOCATION:-./branding}"
