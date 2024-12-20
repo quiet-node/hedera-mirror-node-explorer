@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Install default logos and theme
-cp ./src/assets/brand*.png ./src/assets/branding/
-
 # Install possible assets customization
 BRANDING_DIR="${BRANDING_LOCATION:-./branding}"
 cp ${BRANDING_DIR}/assets/* ./src/assets/branding/ 2>/dev/null | :

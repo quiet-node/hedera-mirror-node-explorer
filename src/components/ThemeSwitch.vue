@@ -42,9 +42,9 @@
 
 import {onMounted, ref, watch} from "vue";
 import {AppStorage} from "@/AppStorage.ts";
-import {NetworkConfig} from "@/config/NetworkConfig.ts";
+import {CoreConfig} from "@/config/CoreConfig.ts";
 
-const networkConfig = NetworkConfig.inject()
+const coreConfig = CoreConfig.inject()
 
 const darkSelected = ref(false)
 onMounted(() => {
@@ -61,6 +61,9 @@ onMounted(() => {
       document.documentElement.style.setProperty('--background-tertiary', 'var(--dark-background-tertiary)')
       document.documentElement.style.setProperty('--table-border', 'var(--dark-table-border)')
       document.documentElement.style.setProperty('--network-theme-color', 'var(--dark-network-theme-color)')
+      document.getElementById('product-logo')?.setAttribute('src', coreConfig.productLogoDarkURL ?? '')
+      document.getElementById('sponsor-logo')?.setAttribute('src', coreConfig.sponsorLogoDarkURL ?? '')
+      document.getElementById('built-on-logo')?.setAttribute('src', coreConfig.builtOnLogoDarkURL ?? '')
     } else {
       AppStorage.setTheme('light')
       document.documentElement.style.setProperty('--text-primary', 'var(--light-text-primary)')
@@ -69,6 +72,9 @@ onMounted(() => {
       document.documentElement.style.setProperty('--background-tertiary', 'var(--light-background-tertiary)')
       document.documentElement.style.setProperty('--table-border', 'var(--light-table-border)')
       document.documentElement.style.setProperty('--network-theme-color', 'var(--light-network-theme-color)')
+      document.getElementById('product-logo')?.setAttribute('src', coreConfig.productLogoLightURL ?? '')
+      document.getElementById('sponsor-logo')?.setAttribute('src', coreConfig.sponsorLogoLightURL ?? '')
+      document.getElementById('built-on-logo')?.setAttribute('src', coreConfig.builtOnLogoLightURL ?? '')
     }
   }, {immediate: true})
 })

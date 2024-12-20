@@ -30,20 +30,11 @@
     <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">
       <router-link :to="routeManager.makeRouteToMainDashboard()" class="mr-3">
         <img
-            v-if="productLogoURL"
             id="product-logo"
             alt="Product Logo"
             class="image"
             style="max-width: 165px; max-height: 49px"
-            :src="productLogoURL"
-        >
-        <img
-            v-else
-            id="product-logo"
-            alt="Product Logo"
-            class="image"
-            style="max-width: 165px; max-height: 49px"
-            src="@/assets/branding/brand-product-logo.png"
+            :src="productLogoURL ?? ''"
         >
       </router-link>
       <AxiosStatus/>
@@ -72,8 +63,12 @@
 
     <div class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0 mr-3">
       <router-link :to="routeManager.makeRouteToMainDashboard()">
-        <img v-if="productLogoURL" id="product-logo" alt="Product Logo" class="image" :src="productLogoURL">
-        <img v-else id="product-logo" alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png">
+        <img
+            id="product-logo"
+            alt="Product Logo"
+            class="image"
+            :src="productLogoURL ?? ''"
+        >
       </router-link>
       <AxiosStatus/>
     </div>
@@ -150,7 +145,7 @@ const coreConfig = CoreConfig.inject()
 const networkConfig = NetworkConfig.inject()
 
 const enableStaking = routeManager.enableStaking
-const productLogoURL = coreConfig.productLogoURL
+const productLogoURL = coreConfig.productLogoLightURL
 
 
 const searchBarClass = computed(() => {
