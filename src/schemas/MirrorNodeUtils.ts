@@ -416,7 +416,7 @@ export async function drainTransactions(r: TransactionResponse, limit: number): 
     let result = r.transactions ?? []
     let i = 1
     while (r.links?.next && result.length < limit) {
-        console.log("drain iteration: " + i);
+        // console.log("drain iteration: " + i);
         i += 1
         const ar = await axios.get<TransactionResponse>(r.links.next)
         if (ar.data.transactions) {
@@ -431,7 +431,7 @@ export async function drainAccounts(r: AccountsResponse, limit: number): Promise
     let result = r.accounts ?? []
     let i = 1
     while (r.links?.next && result.length < limit) {
-        console.log("drain iteration: " + i);
+        // console.log("drain iteration: " + i);
         i += 1
         const ar = await axios.get<AccountsResponse>(r.links.next)
         if (ar.data.accounts) {
@@ -446,7 +446,7 @@ export async function drainContractResults(r: ContractResultsResponse, limit: nu
     let result = r.results ?? []
     let i = 1
     while (r.links?.next && result.length < limit) {
-        console.log("drain iteration: " + i);
+        // console.log("drain iteration: " + i);
         i += 1
         const ar = await axios.get<ContractResultsResponse>(r.links.next)
         if (ar.data.results) {
@@ -461,7 +461,7 @@ export async function drainContractResultsLogs(r: ContractResultsLogResponse, li
     let result = r.logs ?? []
     let i = 1
     while (r.links?.next && result.length < limit) {
-        console.log("drain iteration: " + i);
+        // console.log("drain iteration: " + i);
         i += 1
         const ar = await axios.get<ContractResultsLogResponse>(r.links.next)
         if (ar.data.logs) {
