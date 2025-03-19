@@ -36,7 +36,7 @@ export class EntityTextFieldController {
         let result: EntityTextFieldState
         const trimmedValue = this.baseTextFieldController.newText.value.trim()
         if (trimmedValue !== "") {
-            const entityID = EntityID.parse(stripChecksum(trimmedValue), true)
+            const entityID = this.parseEntityID(trimmedValue)
             if (entityID !== null) {
                 const checksum = extractChecksum(trimmedValue)
                 const network = routeManager.currentNetwork.value
@@ -58,13 +58,28 @@ export class EntityTextFieldController {
         let result: string | null
         const trimmedValue = this.baseTextFieldController.newText.value.trim()
         if (trimmedValue !== "") {
-            const entityID = EntityID.parse(stripChecksum(trimmedValue), true)
+            const entityID = this.parseEntityID(trimmedValue)
             result = entityID?.toString() ?? null
         } else {
             result = null
         }
         return result
     })
+
+    private parseEntityID(textValue: string): EntityID | null {
+        let result: EntityID | null
+        const baseRealm = routeManager.currentNetworkEntry.value.baseRealm
+        const baseShard = routeManager.currentNetworkEntry.value.baseShard
+        const strippedValue = stripChecksum(textValue)
+        result = EntityID.parse(strippedValue)
+        if (result === null) {
+            const positiveInt = EntityID.parsePositiveInt(strippedValue)
+            if (positiveInt !== null) {
+                result = new EntityID(baseShard, baseRealm, positiveInt, null)
+            }
+        }
+        return result
+    }
 }
 
 export enum EntityTextFieldState {

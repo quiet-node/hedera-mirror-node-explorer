@@ -33,13 +33,13 @@ export class EthereumAddress {
             + "…" + byteToHex(this.bytes.slice(-digitKept / 2))
     }
 
-    public toEntityID(): EntityID | null {
+    public toEntityID(baseShard = 0, baseRealm = 0): EntityID | null {
         let result: EntityID | null
         if (this.isLongZeroForm()) {
             const view = new DataView(this.bytes.buffer)
             const bigNum = view.getBigInt64(12)
             const num = 0 <= bigNum && bigNum < EntityID.MAX_INT ? Number(bigNum) : null
-            result = num != null ? new EntityID(0, 0, num, null) : null
+            result = num != null ? new EntityID(baseShard, baseRealm, num, null) : null
         } else {
             result = null
         }

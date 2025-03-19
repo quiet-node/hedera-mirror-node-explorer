@@ -21,7 +21,7 @@ export class EntityID {
         this.checksum = checksum
     }
 
-    public static parse(s: string, autoComplete = false): EntityID | null {
+    public static parse(s: string): EntityID | null {
         let result: EntityID | null
 
         const i1 = s.indexOf(".")
@@ -39,41 +39,34 @@ export class EntityID {
             } else {
                 result = new EntityID(shard, realm, num, null)
             }
-        } else if (i1 === -1 && i2 === -1 && autoComplete) {
-            const num = EntityID.parsePositiveInt(s)
-            if (num == null) {
-                result = null
-            } else {
-                result = new EntityID(0, 0, num, null)
-            }
         } else {
             result = null
         }
         return result
     }
 
-    public static parseWithChecksum(s: string, autoComplete = false): EntityID | null {
+    public static parseWithChecksum(s: string): EntityID | null {
         let result: EntityID | null
 
         const i = s.indexOf("-")
         if (i != -1) {
             const id = s.substring(0, i)
             const checksum = s.substring(i + 1)
-            const entityId = EntityID.parse(id, autoComplete)
+            const entityId = EntityID.parse(id)
             if (entityId !== null && hasChecksumSyntax(checksum)) {
                 result = new EntityID(entityId.shard, entityId.realm, entityId.num, checksum)
             } else {
                 result = null
             }
         } else {
-            result = EntityID.parse(s, autoComplete)
+            result = EntityID.parse(s)
         }
 
         return result
     }
 
     public static normalize(s: string): string | null {
-        const id = EntityID.parse(s, true)
+        const id = EntityID.parse(s)
         return id !== null ? id.toString() : null
     }
 
@@ -92,7 +85,7 @@ export class EntityID {
         return byteToHex(buffer)
     }
 
-    public static fromAddress(address: string | undefined): EntityID | null {
+    public static fromAddress(address: string | undefined, baseShard = 0, baseRealm = 0): EntityID | null {
         let result: EntityID | null
 
         if (address) {
@@ -101,7 +94,7 @@ export class EntityID {
                 const view = new DataView(buffer.buffer)
                 const bigNum = view.getBigInt64(12)
                 const num = 0 <= bigNum && bigNum < EntityID.MAX_INT ? Number(bigNum) : null
-                result = num != null ? new EntityID(0, 0, num, null) : null
+                result = num != null ? new EntityID(baseShard, baseRealm, num, null) : null
             } else {
                 result = null
             }

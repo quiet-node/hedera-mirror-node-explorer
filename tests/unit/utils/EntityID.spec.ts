@@ -90,35 +90,20 @@ describe("EntityID.ts", () => {
     test("98", () => {
         const str = "98"
         expect(EntityID.parse(str)).toBeNull()
-        const obj = EntityID.parse(str, true)
-        expect(obj?.shard).toBe(0)
-        expect(obj?.realm).toBe(0)
-        expect(obj?.num).toBe(98)
-        expect(obj?.checksum).toBeNull()
-        expect(obj?.toString()).toBe("0.0.98")
 
         const str2 = "98-abcde"
         expect(EntityID.parse(str2)).toBeNull()
-        expect(EntityID.parse(str2, true)).toBeNull()
         expect(EntityID.parseWithChecksum(str2)).toBeNull()
-        const obj2 = EntityID.parseWithChecksum(str2, true)
-        expect(obj2?.shard).toBe(0)
-        expect(obj2?.realm).toBe(0)
-        expect(obj2?.num).toBe(98)
-        expect(obj2?.checksum).toBe("abcde")
-        expect(obj2?.toString()).toBe("0.0.98")
     })
 
     test("Very big number", () => {
         const veryBigNum = Math.pow(2, 32) - 1
-        const obj = EntityID.parse(veryBigNum.toString())
-        expect(obj).toBeNull()
-        const obj2 = EntityID.parse(veryBigNum.toString(), true)
-        expect(obj2?.shard).toBe(0)
-        expect(obj2?.realm).toBe(0)
-        expect(obj2?.num).toBe(veryBigNum)
-        expect(obj2?.checksum).toBeNull()
-        expect(obj2?.toString()).toBe("0.0." + veryBigNum.toString())
+        const obj = EntityID.parse("0.0." + veryBigNum.toString())
+        expect(obj?.shard).toBe(0)
+        expect(obj?.realm).toBe(0)
+        expect(obj?.num).toBe(veryBigNum)
+        expect(obj?.checksum).toBeNull()
+        expect(obj?.toString()).toBe("0.0." + veryBigNum.toString())
     })
 
     test("1.2.3.4", () => {
@@ -167,16 +152,14 @@ describe("EntityID.ts", () => {
     })
 
     test("0x000000444", () => {
-        const obj = EntityID.parse("0x000000444", true)
+        const obj = EntityID.parse("0x000000444")
         expect(obj).toBeNull()
     })
 
     test("Too Big Number", () => {
         const tooBigNum = Math.pow(2, 32)
-        const obj = EntityID.parse(tooBigNum.toString())
+        const obj = EntityID.parse("0.0." + tooBigNum.toString())
         expect(obj).toBeNull()
-        const obj2 = EntityID.parse(tooBigNum.toString(), true)
-        expect(obj2).toBeNull()
     })
 
     //
@@ -216,6 +199,16 @@ describe("EntityID.ts", () => {
         expect(obj).toBeNull()
     })
 
+    test("Non zero realm and shard", () => {
+        const a = "0x00000000000000000000000000000000000000ff"
+        const baseShard = 1
+        const baseRealm = 2
+        const obj = EntityID.fromAddress(a, baseShard, baseRealm)
+        expect(obj?.shard).toBe(1)
+        expect(obj?.realm).toBe(2)
+        expect(obj?.num).toBe(255)
+        expect(obj?.toString()).toBe("1.2.255")
+    })
 
     //
     // EntityID.compareAccountID()
@@ -257,6 +250,18 @@ describe("EntityID.ts", () => {
         }
     })
 
+    test("1.2.100 < 1.2.101", () => {
+        const id1 = EntityID.parse("1.2.100")
+        const id2 = EntityID.parse("1.2.101")
+        expect(id1 !== null && id2 !== null).toBe(true)
+        if (id1 !== null && id2 !== null) {
+            expect(id1.compareAccountID(id2) < 0).toBe(true)
+            expect(id2.compareAccountID(id1) > 0).toBe(true)
+            expect(id1.compareAccountID(id1) == 0).toBe(true)
+            expect(id2.compareAccountID(id2) == 0).toBe(true)
+        }
+    })
+
     //
     // EntityID.fromAddress()
     //
@@ -271,5 +276,13 @@ describe("EntityID.ts", () => {
         const evmAddress = "0x6482571dbbE4E68CbcDC6207f82d701804b8664a"
         const id = EntityID.fromAddress(evmAddress)
         expect(id).toBeNull()
+    })
+
+    test("Non zero realm and shard", () => {
+        const evmAddress = "0x00000000000000000000000000000000000000ff"
+        const baseShard = 1
+        const baseRealm = 2
+        const id = EntityID.fromAddress(evmAddress, baseShard, baseRealm)
+        expect(id?.toString()).toBe("1.2.255")
     })
 })
