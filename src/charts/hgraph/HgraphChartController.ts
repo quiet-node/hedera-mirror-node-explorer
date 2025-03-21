@@ -22,10 +22,11 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
     //
 
     protected makeBarChartConfig(metrics: EcosystemMetric[], range: ChartRange,
-                                 logarithmic: boolean, yLabel: string | null): ChartConfiguration {
+                                 logarithmic: boolean, yLabel: string | null,
+                                 context: CanvasRenderingContext2D): ChartConfiguration {
         const granularity = computeGranularityForRange(range)
         const graphLabels = makeGraphLabels(metrics, granularity)
-        const graphDataSet = this.makeGraphDataSet(metrics) as any
+        const graphDataSet = this.makeBarGraphDataSet(metrics, context) as any
         const textPrimaryColor = this.themeController.getTextPrimaryColor()
         const textSecondaryColor = this.themeController.getTextSecondaryColor()
         const yScaleType = logarithmic ? "logarithmic" : "linear"
@@ -72,14 +73,95 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
         }
     }
 
-    protected makeGraphDataSet(metrics: EcosystemMetric[]): object {
+    protected makeLineChartConfig(metrics: EcosystemMetric[], range: ChartRange,
+                                  logarithmic: boolean, yLabel: string | null,
+                                  context: CanvasRenderingContext2D): ChartConfiguration {
+        const granularity = computeGranularityForRange(range)
+        const graphLabels = makeGraphLabels(metrics, granularity)
+        const graphDataSet = this.makeLineGraphDataSet(metrics, context) as any
+        const textPrimaryColor = this.themeController.getTextPrimaryColor()
+        const textSecondaryColor = this.themeController.getTextSecondaryColor()
+        const yScaleType = logarithmic ? "logarithmic" : "linear"
+
+        return {
+            type: 'line',
+            data: {
+                labels: graphLabels,
+                datasets: [graphDataSet],
+            },
+            options: {
+                elements: {
+                  line: {
+                      tension: 0.4,
+                      cubicInterpolationMode: "default",
+                      // cubicInterpolationMode: "monotone",
+                  }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: textPrimaryColor
+                        },
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        type: yScaleType,
+                        ticks: {
+                            color: textPrimaryColor
+                        },
+                        grid: {
+                            display: false
+                        },
+                        beginAtZero: true,
+                        title: {
+                            display: yLabel !== null,
+                            text: yLabel ?? "",
+                            color: textSecondaryColor
+                        },
+                    }
+                },
+                maintainAspectRatio: false
+            }
+        }
+    }
+
+    protected makeBarGraphDataSet(metrics: EcosystemMetric[],
+                                  context: CanvasRenderingContext2D): object {
         const totals = metrics.map((m: EcosystemMetric) => m.total)
         const graphBarColor = this.themeController.getGraphBarColor()
         return {
             label: this.chartTitle,
             data: totals,
             borderWidth: 1,
+            borderColor: graphBarColor,
             backgroundColor: graphBarColor
+        }
+    }
+
+    protected makeLineGraphDataSet(metrics: EcosystemMetric[],
+                                   context: CanvasRenderingContext2D): object {
+        const totals = metrics.map((m: EcosystemMetric) => m.total)
+        const graphLineColor = this.themeController.getGraphLineColor()
+        const gradient = context.createLinearGradient(0, 0, 0, 300)
+        const startColor = this.themeController.getGraphGradientStartColor()
+        const endColor = this.themeController.getGraphGradientEndColor()
+        gradient.addColorStop(0, startColor)
+        gradient.addColorStop(1, endColor)
+        return {
+            label: this.chartTitle,
+            data: totals,
+            borderWidth: 1,
+            borderColor: graphLineColor,
+            pointBackgroundColor: graphLineColor,
+            backgroundColor: gradient,
+            fill: true,
         }
     }
 
