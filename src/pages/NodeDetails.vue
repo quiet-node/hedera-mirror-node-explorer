@@ -86,13 +86,13 @@
           <NetworkDashboardItemV2
               id="yearlyRate"
               title="Last Period Reward Rate"
-              :value="annualizedRate.toString()"
+              :value="node ? annualizedRate.toString() : null"
               unit="APPROX ANNUAL EQUIVALENT"
           />
           <NetworkDashboardItemV2
               id="consensusStake"
               title="Stake for Consensus"
-              :value="makeFloorHbarAmount(stake)"
+              :value="node ? makeFloorHbarAmount(stake) : null"
               :unit=cryptoName
               :info-label="stakeLabel"
               :extra="stake > 0 ? `${stakePercentage} of total` : undefined"
@@ -100,33 +100,33 @@
           <NetworkDashboardItemV2
               id="rewarded"
               title="Staked for Reward"
-              :value="makeFloorHbarAmount(stakeRewarded)"
+              :value="node ? makeFloorHbarAmount(stakeRewarded): null"
               :unit=cryptoName
               :extra="`${stakeRewardedPercentage}% of total`"
           />
           <NetworkDashboardItemV2
               id="notRewarded"
               title="Staked For No Reward"
-              :value="makeFloorHbarAmount(stakeUnrewarded)"
+              :value="node ? makeFloorHbarAmount(stakeUnrewarded) : null"
               :unit=cryptoName
               :extra="`${stakeUnrewardedPercentage}% of total`"
           />
           <NetworkDashboardItemV2
               id="minStake"
               title="Min Stake"
-              :value="makeFloorHbarAmount(minStake)"
+              :value="node ? makeFloorHbarAmount(minStake) : null"
               :unit=cryptoName
           />
           <NetworkDashboardItemV2
               id="maxStake"
               title="Max Stake"
-              :value="makeFloorHbarAmount(maxStake)"
+              :value="node ? makeFloorHbarAmount(maxStake) :  null"
               :unit=cryptoName
           />
           <NetworkDashboardItemV2
               title="Current Staking Period"
               id="stakingPeriod"
-              value="24"
+              :value="node ? '24' : null"
               unit="HOURS"
               extra="from 00:00 am today to 11:59 pm today UTC"
           />
@@ -161,7 +161,7 @@
 
 <script setup lang="ts">
 
-import {computed, onBeforeUnmount, onMounted, ref} from 'vue';
+import {computed, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -183,6 +183,7 @@ import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import NetworkDashboardItemV2 from "@/components/node/NetworkDashboardItemV2.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
+import {loadingKey} from "@/AppKeys.ts";
 
 const props = defineProps({
   nodeId: {
@@ -193,6 +194,7 @@ const props = defineProps({
 })
 
 const cryptoName = CoreConfig.inject().cryptoName
+const loading = inject(loadingKey, ref(false))
 
 const nodeIdNb = computed(() => PathParam.parseNodeId(props.nodeId))
 const nodeAnalyzer = new NodeAnalyzer(nodeIdNb)
@@ -221,11 +223,9 @@ const stakeUnrewardedPercentage = computed(() =>
     networkAnalyzer.stakeUnrewardedTotal.value != 0 ? Math.round(nodeAnalyzer.stakeUnrewarded.value / networkAnalyzer.stakeUnrewardedTotal.value * 10000) / 100 : 0
 )
 
-const unknownNodeId = ref(false)
-
 const notification = computed(() => {
-  let result
-  if (unknownNodeId.value) {
+  let result: string | null
+  if (!loading.value && node.value === null) {
     result = "Node with ID " + props.nodeId + " was not found"
   } else {
     result = null

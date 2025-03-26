@@ -64,6 +64,11 @@ describe("NodeDetails.vue", () => {
             }
         });
 
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/network/stake",
+        ])
+
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
@@ -176,6 +181,12 @@ describe("NodeDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/network/stake",
+            "api/v1/contracts/0.0.5",
+        ])
+
         expect(wrapper.text()).toMatch(RegExp("Node " + node))
 
         expect(wrapper.get("#adminKeyValue").text()).toBe("Complex Key (6 levels) See details")
@@ -184,4 +195,60 @@ describe("NodeDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
     });
+
+    it("should display notification for unknown node ID", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+        const mock = new MockAdapter(axios as any);
+
+        const UNKNOWN_ID = "99999"
+        const matcher1 = "api/v1/network/nodes?node.id=" + UNKNOWN_ID
+        mock.onGet(matcher1).reply(404);
+
+        const matcher2 = "api/v1/network/stake"
+        mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_STAKE);
+
+        const wrapper = mount(NodeDetails, {
+            global: {
+                plugins: [router, Oruga],
+                provide: {"isMediumScreen": false}
+            },
+            props: {
+                nodeId: UNKNOWN_ID
+            }
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/network/stake",
+        ])
+
+        expect(wrapper.text()).toMatch(RegExp("Node with ID " + UNKNOWN_ID + " was not found"))
+        expect(wrapper.get("#adminKeyValue").text()).toBe("None")
+        expect(wrapper.get("#nodeAccountValue").text()).toBe("None")
+        expect(wrapper.get("#descriptionValue").text()).toBe("None")
+        expect(wrapper.get("#publicKeyValue").text()).toBe("None")
+        expect(wrapper.get("#fileValue").text()).toBe("None")
+        expect(wrapper.get("#rangeFromValue").text()).toBe("None")
+        expect(wrapper.get("#rangeToValue").text()).toBe("None")
+        expect(wrapper.get("#nodeCertHashValue").text()).toBe("None")
+        expect(wrapper.get("#serviceEndpointsValue").text()).toBe("None")
+
+        expect(wrapper.get("#yearlyRate").text()).toBe("LAST PERIOD REWARD RATE None")
+        expect(wrapper.get("#consensusStake").text()).toBe("STAKE FOR CONSENSUS None")
+        expect(wrapper.get("#minStake").text()).toBe("MIN STAKE None")
+        expect(wrapper.get("#maxStake").text()).toBe("MAX STAKE None")
+        expect(wrapper.get("#rewarded").text()).toBe("STAKED FOR REWARD None")
+        expect(wrapper.get("#notRewarded").text()).toBe("STAKED FOR NO REWARD None")
+        expect(wrapper.get("#stakingPeriod").text()).toBe("CURRENT STAKING PERIOD None")
+
+        mock.restore()
+        wrapper.unmount()
+        await flushPromises()
+    });
+
 });
